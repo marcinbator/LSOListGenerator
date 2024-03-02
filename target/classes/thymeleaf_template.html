@@ -8,14 +8,39 @@
       }
       h3 {
         text-align: center;
-        font-size: 24px;
+        font-size: 20px;
       }
-
+      h2 {
+        text-align: center;
+        font-size: 16px;
+        font-weight: lighter;
+      }
+      td {
+        border: 1px solid gray;
+        margin: 0;
+        padding: 2px 5px;
+        min-width: 15px;
+        text-wrap: none;
+        text-align: center;
+      }
       @page {
         size: A4 landscape;
+        margin: 5mm;
       }
       body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-family: Arial, sans-serif;
+        margin: 0;
+        width: 100%;
+        height: 100vh;
+      }
+      table {
+        margin-top: 40px;
+        font-size: small;
+        border-collapse: collapse;
+        width: 100%;
       }
     </style>
     <title>Lista</title>
@@ -26,10 +51,27 @@
         th:text="'Grupa ' + ${group.number} + ' - ' + ${month} + ' '  + ${year}"
       ></span>
     </h3>
-    <ul>
-      <li th:each="acolyte : ${group.acolytes}">
-        <span th:text="${acolyte.name}"></span>
-      </li>
-    </ul>
+    <h2 th:text="'/'+${group.day1} + ' i ' + ${group.day2}+'/'"></h2>
+    <table>
+      <tr>
+        <td style="font-weight: bold; background: #dadada">Nazwisko i imię</td>
+        <td
+          style="font-weight: bold; background: #dadada"
+          th:each="dayNumber : ${#numbers.sequence(1, daysAmount + 1)}"
+          th:text="${dayNumber}"
+        ></td>
+      </tr>
+      <tr th:each="acolyte : ${group.acolytes}">
+        <td th:text="${acolyte.name}"></td>
+        <td th:each="dayNumber : ${#numbers.sequence(1, daysAmount + 1)}"></td>
+      </tr>
+    </table>
+    <p style="font-size: xx-small; width: 100%; text-align: right">
+      Wygenerowano za pomocą LSO List Generator:
+      <span
+        style="color: gray"
+        th:text="${date.getDayOfMonth()}+'/'+${date.getMonth().getValue()}+'/'+${date.getYear()}+' '+${date.getHour()}+':'+${date.getMinute()}"
+      ></span>
+    </p>
   </body>
 </html>

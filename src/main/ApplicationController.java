@@ -30,7 +30,7 @@ public class ApplicationController extends JFrame {
     private void addSampleData() {
 
         try{
-            groupService.addGroup(new Group(1, "MONDAY", "THURSDAY", "R"));
+            groupService.addGroup(new Group(1, "poniedziałki", "czwartki", "R"));
             groupService.addAcolyte(new Acolyte("Jan Kowalski", 1));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Błąd pobierania danych: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

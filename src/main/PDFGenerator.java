@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -50,6 +52,12 @@ public class PDFGenerator {
         context.setVariable("group", group);
         context.setVariable("month", month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("PL")));
         context.setVariable("year", year);
+
+        YearMonth yearMonthObject = YearMonth.of(year.getValue(), month.getValue());
+        int daysInMonth = yearMonthObject.lengthOfMonth();
+
+        context.setVariable("daysAmount", daysInMonth);
+        context.setVariable("date", LocalDateTime.now());
 
         return templateEngine.process("thymeleaf_template", context);
     }
