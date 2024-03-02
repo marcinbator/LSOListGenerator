@@ -17,8 +17,11 @@ public class PDFGenerator {
         OutputStream outputStream = new FileOutputStream(outputFolder);
 
         ITextRenderer renderer = new ITextRenderer();
+
         renderer.setDocumentFromString(html);
         renderer.layout();
+
+
         renderer.createPDF(outputStream);
 
         outputStream.close();
