@@ -3,6 +3,7 @@ package main;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import main.models.Acolyte;
 import main.models.Group;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupService {
+    @Getter
     private List<Group> groups = new ArrayList<>();
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 

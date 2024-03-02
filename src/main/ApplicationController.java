@@ -6,11 +6,29 @@ import main.models.Group;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.time.Month;
+import java.time.Year;
 
 public class ApplicationController extends JFrame {
+    private Month month;
+    private Year year;
     private final GroupService groupService;
     public ApplicationController() {
         this.groupService = new GroupService();
+        initSampleValues();
+        //addSampleData();
+        initWindow();
+    }
+
+    //
+
+    private void initSampleValues() {
+        month = Month.APRIL;
+        year = Year.of(2021);
+    }
+
+    private void addSampleData() {
+
         try{
             groupService.addGroup(new Group(1, "MONDAY", "THURSDAY", "R"));
             groupService.addAcolyte(new Acolyte("Jan Kowalski", 1));
@@ -19,10 +37,7 @@ public class ApplicationController extends JFrame {
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, "Błąd dodawania danych: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        initWindow();
     }
-
-    //
 
     private void initWindow() {
         setTitle("Generator listy LSO");
@@ -43,7 +58,7 @@ public class ApplicationController extends JFrame {
     private void handleGenerateClick() {
         try {
             PDFGenerator pdfGenerator = new PDFGenerator();
-            pdfGenerator.generatePdf();
+            pdfGenerator.generatePdf(groupService.getGroups().get(0), month, year);
             JOptionPane.showMessageDialog(this, "Wygenerowano pomyślnie!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Błąd generowania: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

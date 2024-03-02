@@ -1,20 +1,35 @@
-<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
+      * {
+        font-family: "Arial Unicode MS", sans-serif;
+      }
       h3 {
         text-align: center;
-        color: red;
+        font-size: 24px;
       }
 
       @page {
         size: A4 landscape;
       }
+      body {
+        font-family: Arial, sans-serif;
+      }
     </style>
+    <title>Lista</title>
   </head>
   <body>
     <h3>
-      <span th:text="'Welcome to ' + ${to} + '!'"></span>
+      <span
+        th:text="'Grupa ' + ${group.number} + ' - ' + ${month} + ' '  + ${year}"
+      ></span>
     </h3>
+    <ul>
+      <li th:each="acolyte : ${group.acolytes}">
+        <span th:text="${acolyte.name}"></span>
+      </li>
+    </ul>
   </body>
 </html>
