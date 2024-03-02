@@ -1,0 +1,15 @@
+[
+  {
+    "number": 1,
+    "acolytes": [
+      {
+        "id": "53e337e5-4b94-45f3-b336-68c547fe948e",
+        "name": "Jan Kowalski",
+        "groupNumber": 1
+      }
+    ],
+    "day1": "MONDAY",
+    "day2": "THURSDAY",
+    "sunday": "R"
+  }
+]
