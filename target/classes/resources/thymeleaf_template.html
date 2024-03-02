@@ -48,7 +48,7 @@
   <body>
     <h3>
       <span
-        th:text="'Grupa ' + ${group.number} + ' - ' + ${month} + ' '  + ${year}"
+        th:text="${month} + ' '  + ${year} + ' - ' + 'grupa ' + ${group.number}"
       ></span>
     </h3>
     <h2

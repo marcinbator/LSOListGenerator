@@ -1,4 +1,4 @@
-package main;
+package main.pdfService;
 
 import com.lowagie.text.pdf.BaseFont;
 import main.models.Day;
@@ -10,7 +10,6 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,10 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class PDFGenerator {
-    public void generatePdf(Group group, Month month, Year year) throws IOException {
+    public void generatePdf(Group group, Month month, Year year, String path) throws IOException {
         String html = parseThymeleafTemplate(group, month, year);
 
-        String outputFolder = System.getProperty("user.home") + File.separator + "Desktop/thymeleaf.pdf";
+        String outputFolder = path +"/lista_"+month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("PL"))+"_"+year+"_grupa_"+group.getNumber()+".pdf";
         OutputStream outputStream = new FileOutputStream(outputFolder);
 
         ITextRenderer renderer = new ITextRenderer();
