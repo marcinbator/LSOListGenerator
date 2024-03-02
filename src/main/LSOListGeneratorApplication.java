@@ -1,5 +1,7 @@
 package main;
 
+import main.UIService.ApplicationController;
+
 import javax.swing.*;
 
 public class LSOListGeneratorApplication {

@@ -48,30 +48,73 @@
   <body>
     <h3>
       <span
-        th:text="'Grupa ' + ${group.number} + ' - ' + ${month} + ' '  + ${year}"
+        th:text="${month} + ' '  + ${year} + ' - ' + 'grupa ' + ${group.number}"
       ></span>
     </h3>
-    <h2 th:text="'/'+${group.day1} + ' i ' + ${group.day2}+'/'"></h2>
+    <h2
+      th:text="'/'+${group.getDay1Name} + ' i ' + ${group.getDay2Name}+'/'"
+    ></h2>
     <table>
       <tr>
-        <td style="font-weight: bold; background: #dadada">Nazwisko i imię</td>
+        <td style="border: none"></td>
         <td
-          style="font-weight: bold; background: #dadada"
-          th:each="dayNumber : ${#numbers.sequence(1, daysAmount + 1)}"
-          th:text="${dayNumber}"
+          style="border: none"
+          th:each="day:${days}"
+          th:text="${day.sunday? day.sundayMass: ''}"
         ></td>
       </tr>
-      <tr th:each="acolyte : ${group.acolytes}">
-        <td th:text="${acolyte.name}"></td>
-        <td th:each="dayNumber : ${#numbers.sequence(1, daysAmount + 1)}"></td>
+      <tr>
+        <td style="font-weight: bold; background: #dadada; text-align: left">
+          Nazwisko i imię
+        </td>
+        <td
+          th:each="day : ${days}"
+          th:text="${day.getDayOfMonth()}"
+          th:style="${day.obligatory ? 'background: #b8b4b4' : (day.sunday ? 'border: 2px solid black; border-bottom: none' : 'background: #ebebeb')}"
+        ></td>
+      </tr>
+      <tr th:each="acolyte, iterStat : ${group.acolytes}">
+        <td style="text-align: left" th:text="${acolyte.name}"></td>
+        <td
+          th:each="day : ${days}"
+          th:style="${day.obligatory ? 'background: #b8b4b4' : (day.sunday ? (!iterStat.last ? 'border-right: 2px solid black; border-left: 2px solid black;' : 'border-right: 2px solid black; border-left: 2px solid black; border-bottom: 2px solid black') : '')}"
+        ></td>
       </tr>
     </table>
-    <p style="font-size: xx-small; width: 100%; text-align: right">
+    <div style="font-size: x-small; margin-top: 15px">
+      <h4 style="margin-bottom: 2px">Legenda:</h4>
+      <div>
+        <span>
+          <td>16</td>
+          dzień zwykły
+        </span>
+        <span>
+          <td style="background: #b8b4b4">16</td>
+          służenie obowiązkowe
+        </span>
+        <span>
+          <td style="border: 2px solid black">16</td>
+          niedziela
+        </span>
+      </div>
+    </div>
+    <div
+      style="
+        font-size: xx-small;
+        width: 100%;
+        text-align: right;
+        margin-top: 10px;
+      "
+    >
       Wygenerowano za pomocą LSO List Generator:
       <span
         style="color: gray"
-        th:text="${date.getDayOfMonth()}+'/'+${date.getMonth().getValue()}+'/'+${date.getYear()}+' '+${date.getHour()}+':'+${date.getMinute()}"
-      ></span>
-    </p>
+        th:with="day=${date.getDayOfMonth()}, month=${date.getMonth().getValue()}, year=${date.getYear()}, hour=${date.getHour()}, minute=${date.getMinute()}"
+      >
+        <span
+          th:text="${day} + '/' + ${month} + '/' + ${year} + ' ' + (${hour} lt 10 ? '0' + ${hour} : ${hour}) + ':' + (${minute} lt 10 ? '0' + ${minute} : ${minute})"
+        ></span>
+      </span>
+    </div>
   </body>
 </html>

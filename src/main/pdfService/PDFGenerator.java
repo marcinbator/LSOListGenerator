@@ -1,29 +1,29 @@
-package main;
+package main.pdfService;
 
 import com.lowagie.text.pdf.BaseFont;
+import main.models.Day;
 import main.models.Group;
+import main.models.SundayMass;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.Year;
-import java.time.YearMonth;
+import java.time.*;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class PDFGenerator {
-    public void generatePdf(Group group, Month month, Year year) throws IOException {
+    public void generatePdf(Group group, Month month, Year year, String path) throws IOException {
         String html = parseThymeleafTemplate(group, month, year);
 
-        String outputFolder = System.getProperty("user.home") + File.separator + "Desktop/thymeleaf.pdf";
+        String outputFolder = path +"/lista_"+month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("PL"))+"_"+year+"_grupa_"+group.getNumber()+".pdf";
         OutputStream outputStream = new FileOutputStream(outputFolder);
 
         ITextRenderer renderer = new ITextRenderer();
@@ -56,7 +56,20 @@ public class PDFGenerator {
         YearMonth yearMonthObject = YearMonth.of(year.getValue(), month.getValue());
         int daysInMonth = yearMonthObject.lengthOfMonth();
 
-        context.setVariable("daysAmount", daysInMonth);
+        List<Day> days = new ArrayList<>();
+        SundayMass sundayMass = group.getSunday();
+        for (int i = 1; i <= daysInMonth; i++) {
+            Day day = new Day();
+            day.setDayOfMonth(i);
+            day.setDayOfWeek(yearMonthObject.atDay(i).getDayOfWeek());
+            day.setObligatory(day.getDayOfWeek().equals(group.getDay1()) || day.getDayOfWeek().equals(group.getDay2()));
+            day.setSunday(day.getDayOfWeek().equals(DayOfWeek.SUNDAY));
+            day.setSundayMass(sundayMass);
+            sundayMass = SundayMass.getNext(sundayMass);
+            days.add(day);
+        }
+
+        context.setVariable("days", days);
         context.setVariable("date", LocalDateTime.now());
 
         return templateEngine.process("thymeleaf_template", context);
