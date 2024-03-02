@@ -1,8 +1,5 @@
 package main;
 
-import main.models.Acolyte;
-import main.models.Group;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -16,27 +13,14 @@ public class ApplicationController extends JFrame {
     public ApplicationController() {
         this.groupService = new GroupService();
         initSampleValues();
-        //addSampleData();
         initWindow();
     }
 
     //
 
     private void initSampleValues() {
-        month = Month.APRIL;
-        year = Year.of(2021);
-    }
-
-    private void addSampleData() {
-
-        try{
-            groupService.addGroup(new Group(1, "poniedziałki", "czwartki", "R"));
-            groupService.addAcolyte(new Acolyte("Jan Kowalski", 1));
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Błąd pobierania danych: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Błąd dodawania danych: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        month = Month.MARCH;
+        year = Year.of(2024);
     }
 
     private void initWindow() {

@@ -3,18 +3,50 @@
     "number": 1,
     "acolytes": [
       {
-        "id": "53e337e5-4b94-45f3-b336-68c547fe948e",
-        "name": "Jan Kowalski",
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Lewandowski Paweł",
         "groupNumber": 1
       },
       {
-        "id": "53e337e5-4b94-45f3-b336-68c547fe948e",
-        "name": "Jan Kowalski",
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Lewandowski Wojciech",
+        "groupNumber": 1
+      },
+      {
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Bialic Łukasz",
+        "groupNumber": 1
+      },
+      {
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Trzyna Grzegorz",
+        "groupNumber": 1
+      },
+      {
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Tereszkiewicz Jan",
+        "groupNumber": 1
+      },
+      {
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Madera Leon",
+        "groupNumber": 1
+      },
+      {
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Bialic Igor",
+        "groupNumber": 1
+      },
+      {
+        "id": "88bab9e8-25be-4758-8fee-70bd4a79773e",
+        "name": "Kaniuch Daniel",
         "groupNumber": 1
       }
     ],
-    "day1": "poniedziałki",
-    "day2": "czwartki",
-    "sunday": "R"
+    "day1Name": "poniedziałki",
+    "day2Name": "czwartki",
+    "sunday": "R",
+    "day1": "MONDAY",
+    "day2": "THURSDAY"
   }
 ]
