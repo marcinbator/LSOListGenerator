@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import lombok.Setter;
 import main.models.Acolyte;
 import main.models.Group;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class GroupService {
     @Getter
+    @Setter
     private List<Group> groups = new ArrayList<>();
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -35,8 +37,8 @@ public class GroupService {
         saveGroups();
     }
 
-    public void addAcolyte(Acolyte acolyte) throws IOException, IllegalArgumentException {
-        Group group = getGroup(acolyte.getGroupNumber());
+    public void addAcolyte(Acolyte acolyte, int groupNumber) throws IOException, IllegalArgumentException {
+        Group group = getGroup(groupNumber);
         if (group == null) {
             throw new IllegalArgumentException("Group not found");
         }
@@ -44,8 +46,8 @@ public class GroupService {
         saveGroups();
     }
 
-    public void removeAcolyte(Acolyte acolyte) throws IOException {
-        Group group = getGroup(acolyte.getGroupNumber());
+    public void removeAcolyte(Acolyte acolyte, int groupNumber) throws IOException {
+        Group group = getGroup(groupNumber);
         if (group == null) {
             throw new IllegalArgumentException("Group not found");
         }
@@ -53,8 +55,8 @@ public class GroupService {
         saveGroups();
     }
 
-    public void removeGroup(Group group) throws IOException {
-        groups.remove(group);
+    public void removeGroup(int groupNumber) throws IOException {
+        groups.removeIf(group -> group.getNumber() == groupNumber);
         saveGroups();
     }
 
@@ -73,7 +75,7 @@ public class GroupService {
         return groups.stream().filter(group -> group.getNumber() == groupNumber).findFirst().orElse(null);
     }
 
-    private void saveGroups() throws IOException {
+    public void saveGroups() throws IOException {
         Writer writer = new FileWriter("groups.json");
         gson.toJson(groups, writer);
         writer.close();
