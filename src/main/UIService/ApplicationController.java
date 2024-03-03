@@ -8,6 +8,8 @@ import main.pdfService.PDFGenerator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
@@ -250,14 +252,16 @@ public class ApplicationController extends JFrame {
         }
         acolytesTextArea.setText(acolytesText.toString());
 
+
         JTextField groupNumberTextField = new JTextField(String.valueOf(group.getNumber()), 10);
-        groupNumberTextField.setEditable(true);
+        groupNumberTextField.setEditable(false);
 
         JPanel groupNumberPanel = new JPanel();
         groupNumberPanel.add(new JLabel("Numer grupy: "));
         groupNumberPanel.add(groupNumberTextField);
 
         JButton confirmButton = new JButton("Zapisz zmiany");
+        confirmButton.setVisible(false);
         JButton deleteButton = new JButton("Usuń grupę");
 
         // Ustawienie układu FlowLayout dla panelu przycisków
@@ -265,7 +269,29 @@ public class ApplicationController extends JFrame {
         buttonPanel.add(confirmButton);
         buttonPanel.add(deleteButton);
 
-        confirmButton.addActionListener(e -> handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, Integer.parseInt(groupNumberTextField.getText()), dayCheckBoxes));
+        Arrays.stream(dayCheckBoxes).forEach(dayCheckBox -> dayCheckBox.addActionListener(e -> confirmButton.setVisible(true)));
+
+        acolytesTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                confirmButton.setVisible(true);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                confirmButton.setVisible(true);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                confirmButton.setVisible(true);
+            }
+        });
+
+        confirmButton.addActionListener(e -> {
+            handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, Integer.parseInt(groupNumberTextField.getText()), dayCheckBoxes);
+            confirmButton.setVisible(false);
+        });
 
         // Dodanie wszystkich komponentów do panelu głównego
         tilePanel.add(groupNumberPanel); // Panel numeru grupy
