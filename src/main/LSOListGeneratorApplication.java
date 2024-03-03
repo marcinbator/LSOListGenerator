@@ -1,6 +1,6 @@
 package main;
 
-import main.UIService.ApplicationController;
+import main.GUI.ApplicationController;
 
 import javax.swing.*;
 

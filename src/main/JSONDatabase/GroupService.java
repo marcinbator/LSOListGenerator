@@ -1,4 +1,4 @@
-package main;
+package main.JSONDatabase;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -3,31 +3,22 @@
     "number": 1,
     "acolytes": [
       {
-        "id": "293ab218-6798-415e-9569-54ae02cfa378",
-        "name": "Marcin Bator"
+        "id": "9eb5ab83-9def-42ca-9e6d-05859897b68e",
+        "name": "dfsda adsfa"
       },
       {
-        "id": "593b815b-521f-4655-932e-8bdef5f114f6",
-        "name": "Michał Bator"
+        "id": "e9250ae5-e3f6-4ff4-99ca-b694fabb8d37",
+        "name": "asdfads asdf"
       },
       {
-        "id": "af4ae6cf-67bc-4ed9-8d04-713bd33354b1",
-        "name": "dfgsdf sdfgsdfg"
+        "id": "de739c52-3d68-405b-a286-44bad5024035",
+        "name": "asdfas dsf"
       }
     ],
-    "day1Name": "środa",
-    "day2Name": "sobota",
+    "day1Name": "wtorek",
+    "day2Name": "piątek",
     "sunday": "S",
-    "day1": "WEDNESDAY",
-    "day2": "SATURDAY"
-  },
-  {
-    "number": 2,
-    "acolytes": [],
-    "day1Name": "Poniedziałek",
-    "day2Name": "Czwartek",
-    "sunday": "P",
-    "day1": "MONDAY",
-    "day2": "THURSDAY"
+    "day1": "TUESDAY",
+    "day2": "FRIDAY"
   }
 ]
