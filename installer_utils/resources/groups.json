@@ -1,0 +1,33 @@
+[
+  {
+    "number": 2,
+    "acolytes": [
+      {
+        "id": "ac32f5db-da2f-4335-a22a-c939d5051e69",
+        "name": "ggfdsg sdf"
+      },
+      {
+        "id": "f356ad32-b258-4f3f-97a3-7e1782717852",
+        "name": "fg sfg"
+      },
+      {
+        "id": "eb368ad5-cc8d-4bb6-bc23-07241b5de34a",
+        "name": "sfdg sfd"
+      }
+    ],
+    "day1Name": "środa",
+    "day2Name": "sobota",
+    "sunday": "P",
+    "day1": "WEDNESDAY",
+    "day2": "SATURDAY"
+  },
+  {
+    "number": 2,
+    "acolytes": [],
+    "day1Name": "Poniedziałek",
+    "day2Name": "Czwartek",
+    "sunday": "R",
+    "day1": "MONDAY",
+    "day2": "THURSDAY"
+  }
+]

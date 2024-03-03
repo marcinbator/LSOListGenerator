@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\marci\Desktop\LSOListGenerator\LSOListGenerator-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
+  <outfile>C:\Users\marci\Desktop\LSOListGenerator\LSOListGenerator.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\marci\Desktop\LSOListGenerator\favicon.ico</icon>
+  <classPath>
+    <mainClass>main.LSOListGeneratorApplication</mainClass>
+  </classPath>
+  <jre>
+    <path>bin/jre</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+</launch4jConfig>
