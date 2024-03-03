@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "number": 1,
+    "acolytes": [
+      {
+        "id": "a42ed32a-9978-4248-ab73-5dc9859f9f5e",
+        "name": "dupa witam"
+      },
+      {
+        "id": "0a7ed5c9-542c-474e-8b8a-a0404573da14",
+        "name": "elo elo"
+      },
+      {
+        "id": "16f7277d-8549-461e-8084-6eb78e7f28b9",
+        "name": "siemano e"
+      }
+    ],
+    "day1Name": "Poniedziałek",
+    "day2Name": "Czwartek",
+    "sunday": "S",
+    "day1": "MONDAY",
+    "day2": "THURSDAY"
+  }
+]

@@ -7,6 +7,7 @@ import main.models.SundayMass;
 import main.pdfService.PDFGenerator;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
@@ -24,7 +25,10 @@ public class ApplicationController extends JFrame {
     private final GroupService groupService;
     private JScrollPane scrollPane;
     private JButton generatePdfButton;
+    private JPanel groupTilesPanel;
     private String defaultSavePath = System.getProperty("user.home") + "\\Desktop";
+    String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
+    String[] polishDayNames = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"};
 
     public ApplicationController() {
         this.groupService = new GroupService();
@@ -44,6 +48,7 @@ public class ApplicationController extends JFrame {
 
         JPanel monthAndYearSelector = new JPanel(new FlowLayout());
         JPanel pathSelector = new JPanel(new FlowLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout()); // Dodaj nowy panel dla przycisków
 
         initializeGroupTilesPanel();
         initializeMonthComboBox(monthAndYearSelector);
@@ -52,11 +57,21 @@ public class ApplicationController extends JFrame {
         displayCurrentSavePath(pathSelector);
         addChangePathButton(pathSelector);
 
+        JButton addGroupButton = new JButton("Dodaj nową grupę");
+        addGroupButton.addActionListener(e -> {
+            handleAddNewGroup(groupTilesPanel);
+        });
+
+        // Dodaj przycisk 'Dodaj nową grupę' do panelu przycisków
+        buttonPanel.add(addGroupButton);
+        buttonPanel.add(generatePdfButton); // Dodaj również przycisk 'Generuj' do panelu przycisków
+
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(monthAndYearSelector);
         mainPanel.add(pathSelector);
+        mainPanel.add(buttonPanel); // Dodaj panel przycisków do głównego panelu
+
         mainPanel.add(scrollPane);
-        mainPanel.add(generatePdfButton);
 
         add(mainPanel);
     }
@@ -106,38 +121,106 @@ public class ApplicationController extends JFrame {
         }
     }
 
+    private void handleSaveGroupClick(String text, Group group, JPanel container, int newGroupNumber, JCheckBox[] dayCheckBoxes) {
+        var oldGroup = new Group(group.getNumber(), group.getDay1Name(), group.getDay2Name(), group.getDay1(), group.getDay2(), group.getSunday());
+
+        String[] acolytesNames = text.split("\n");
+        group.getAcolytes().clear();
+        for (String name : acolytesNames) {
+            if (!name.trim().isEmpty()) {
+                Acolyte acolyte = new Acolyte(name.trim(), group.getNumber());
+                group.getAcolytes().add(acolyte);
+            }
+        }
+
+        group.setDay1(null);
+        group.setDay2(null);
+
+        for(int i=0; i<dayCheckBoxes.length; i++) {
+            if(dayCheckBoxes[i].isSelected()) {
+                if(group.getDay1() == null) {
+                    group.setDay1(DayOfWeek.valueOf(dayNames[i]));
+                    group.setDay1Name(polishDayNames[i]);
+                } else {
+                    group.setDay2(DayOfWeek.valueOf(dayNames[i]));
+                    group.setDay2Name(polishDayNames[i]);
+                }
+            }
+        }
+        group.setNumber(newGroupNumber);
+
+        refreshGroupContainer(group, container, oldGroup);
+    }
+
+    private void handleAddNewGroup(JPanel groupTilesPanel) {
+        SundayMass sund = SundayMass.R;
+        var gr = !groupService.getGroups().isEmpty() ? groupService.getGroups().get(groupService.getGroups().size() - 1) : null;
+        sund = SundayMass.getNext(gr != null ? gr.getSunday() : sund);
+
+        Group newGroup = new Group(groupService.getGroups().size()+1, "Poniedziałek", "Czwartek", DayOfWeek.MONDAY, DayOfWeek.THURSDAY, sund);
+        try {
+            groupService.addGroup(newGroup);
+            JPanel newTilePanel = createGroupTile(newGroup);
+            groupTilesPanel.add(newTilePanel);
+            groupTilesPanel.revalidate();
+            groupTilesPanel.repaint();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void handleDeleteGroupClick(JPanel groupTilesPanel, Group newGroup, JPanel newTilePanel) {
+        try {
+            groupService.removeGroup(newGroup.getNumber());
+            groupTilesPanel.remove(newTilePanel);
+            groupTilesPanel.revalidate();
+            groupTilesPanel.repaint();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void refreshGroupContainer(Group group, JPanel container, Group oldGroup) {
+        try {
+            groupService.removeGroup(oldGroup.getNumber());
+            groupService.addGroup(group);
+
+            Component[] components = container.getComponents();
+            for (Component component : components) {
+                if (component instanceof JPanel panel) {
+                    Group panelGroup = (Group) panel.getClientProperty("group");
+                    if (panelGroup != null && panelGroup.equals(group)) {
+                        container.remove(panel);
+                        JPanel updatedPanel = createGroupTile(group);
+                        container.add(updatedPanel);
+                        container.revalidate();
+                        container.repaint();
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     //components
 
     private JPanel createGroupTile(Group group) {
-        JPanel tilePanel = new JPanel(new BorderLayout());
+        JPanel tilePanel = new JPanel();
+        tilePanel.setLayout(new BoxLayout(tilePanel, BoxLayout.Y_AXIS)); // Ustawienie layoutu na BoxLayout w pionie
+        tilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 265)); // Ustawienie maksymalnej wysokości
 
-        JLabel groupNumberLabel = new JLabel("Grupa " + group.getNumber());
-        JTextArea acolytesTextArea = new JTextArea(5, 15);
-        acolytesTextArea.setEditable(true);
+        // Ustawienie pionowego paddingu
+        int verticalPadding = 30;
+        tilePanel.setBorder(new EmptyBorder(verticalPadding, 0, verticalPadding, 0));
 
-        StringBuilder acolytesText = new StringBuilder();
-        for (Acolyte acolyte : group.getAcolytes()) {
-            acolytesText.append(acolyte.getName()).append("\n");
-        }
-        acolytesTextArea.setText(acolytesText.toString());
-
-        // Dodanie komponentów do wyboru numeru grupy, dni i przycisku
-        JTextField groupNumberTextField = new JTextField(String.valueOf(group.getNumber()), 10); // Ustawiamy początkową wartość jako numer grupy
-        groupNumberTextField.setEditable(true); // Ustawiamy możliwość edycji
-
-        JPanel groupNumberPanel = new JPanel();
-        groupNumberPanel.add(new JLabel("Numer grupy: "));
-        groupNumberPanel.add(groupNumberTextField);
-
+        // Panel dni tygodnia
         JPanel daysPanel = new JPanel();
-//
-        String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
-        String[] polishDayNames = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"};
-
         daysPanel.add(new JLabel("Dni tygodnia: "));
         JCheckBox[] dayCheckBoxes = new JCheckBox[dayNames.length];
 
-        for (int i=0; i<dayNames.length; i++) {
+        for (int i = 0; i < dayNames.length; i++) {
             dayCheckBoxes[i] = new JCheckBox(polishDayNames[i]);
             dayCheckBoxes[i].setSelected(group.getDay1().toString().equals(dayNames[i]) || group.getDay2().toString().equals(dayNames[i]));
             daysPanel.add(dayCheckBoxes[i]);
@@ -156,129 +239,64 @@ public class ApplicationController extends JFrame {
                 }
             });
         }
-//
-        JButton confirmButton = new JButton("Zatwierdź");
-        confirmButton.addActionListener(e -> saveGroup(acolytesTextArea.getText(), group, tilePanel, Integer.parseInt(groupNumberTextField.getText()), dayCheckBoxes));
 
-        // Dodanie komponentów do panelu
-        tilePanel.add(groupNumberPanel, BorderLayout.NORTH);
-        tilePanel.add(new JScrollPane(acolytesTextArea), BorderLayout.CENTER);
-        tilePanel.add(daysPanel, BorderLayout.WEST);
-        tilePanel.add(confirmButton, BorderLayout.SOUTH);
+        // Pozostałe elementy
+        JTextArea acolytesTextArea = new JTextArea(5, 15);
+        acolytesTextArea.setEditable(true);
+
+        StringBuilder acolytesText = new StringBuilder();
+        for (Acolyte acolyte : group.getAcolytes()) {
+            acolytesText.append(acolyte.getName()).append("\n");
+        }
+        acolytesTextArea.setText(acolytesText.toString());
+
+        JTextField groupNumberTextField = new JTextField(String.valueOf(group.getNumber()), 10);
+        groupNumberTextField.setEditable(true);
+
+        JPanel groupNumberPanel = new JPanel();
+        groupNumberPanel.add(new JLabel("Numer grupy: "));
+        groupNumberPanel.add(groupNumberTextField);
+
+        JButton confirmButton = new JButton("Zapisz zmiany");
+        JButton deleteButton = new JButton("Usuń grupę");
+
+        // Ustawienie układu FlowLayout dla panelu przycisków
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(confirmButton);
+        buttonPanel.add(deleteButton);
+
+        confirmButton.addActionListener(e -> handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, Integer.parseInt(groupNumberTextField.getText()), dayCheckBoxes));
+
+        // Dodanie wszystkich komponentów do panelu głównego
+        tilePanel.add(groupNumberPanel); // Panel numeru grupy
+        tilePanel.add(daysPanel); // Panel dni tygodnia
+        tilePanel.add(new JScrollPane(acolytesTextArea)); // Panel tekstowy z acolytes
+        tilePanel.add(buttonPanel); // Panel przycisków
+        tilePanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Wyrównanie do lewej krawędzi
+
+        deleteButton.addActionListener(e -> {
+            handleDeleteGroupClick(groupTilesPanel, group, tilePanel);
+        });
 
         return tilePanel;
     }
 
+
+
     private void initializeGroupTilesPanel() {
-        JPanel groupTilesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        groupTilesPanel = new JPanel();
+        groupTilesPanel.setLayout(new BoxLayout(groupTilesPanel, BoxLayout.Y_AXIS));
         groupTilesPanel.setBorder(BorderFactory.createTitledBorder("Grupy"));
+        groupTilesPanel.setMinimumSize(new Dimension(600, 500));
+
         scrollPane = new JScrollPane(groupTilesPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         var groups = groupService.getGroups().stream().sorted(Comparator.comparingInt(Group::getNumber)).toList();
         for (Group group : groups) {
             JPanel tilePanel = createGroupTile(group);
-            JButton deleteButton = new JButton("Usuń grupę");
-            deleteButton.addActionListener(e -> {
-                try {
-                    groupService.removeGroup(group.getNumber());
-                    groupTilesPanel.remove(tilePanel); // Usunięcie panelu grupy z kontenera
-                    groupTilesPanel.revalidate();
-                    groupTilesPanel.repaint();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            });
-            tilePanel.add(deleteButton, BorderLayout.EAST); // Dodanie przycisku usuwania do panelu grupy
             groupTilesPanel.add(tilePanel);
-        }
-
-        // Dodanie przycisku do dodawania nowej grupy
-        JButton addGroupButton = new JButton("Dodaj nową grupę");
-        addGroupButton.addActionListener(e -> {
-            SundayMass sund = SundayMass.R;
-            var gr = !groupService.getGroups().isEmpty() ?groupService.getGroups().get(groupService.getGroups().size()-1) : null;
-            sund = SundayMass.getNext(gr != null ? gr.getSunday() : sund);
-            // Utworzenie nowej grupy z domyślnymi danymi i dodanie jej do serwisu
-            Group newGroup = new Group(groupService.getGroups().size()+1, "Dzień 1", "Dzień 2", DayOfWeek.MONDAY, DayOfWeek.TUESDAY, sund);
-            try {
-                groupService.addGroup(newGroup);
-                // Dodanie nowego panelu dla nowej grupy
-                JPanel newTilePanel = createGroupTile(newGroup);
-                JButton newDeleteButton = new JButton("Usuń grupę");
-                newDeleteButton.addActionListener(evt -> {
-                    try {
-                        groupService.removeGroup(newGroup.getNumber());
-                        groupTilesPanel.remove(newTilePanel); // Usunięcie panelu grupy z kontenera
-                        groupTilesPanel.revalidate();
-                        groupTilesPanel.repaint();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                });
-                newTilePanel.add(newDeleteButton, BorderLayout.EAST); // Dodanie przycisku usuwania do panelu grupy
-                groupTilesPanel.add(newTilePanel);
-                groupTilesPanel.revalidate();
-                groupTilesPanel.repaint();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
-        groupTilesPanel.add(addGroupButton);
-    }
-
-    private void saveGroup(String text, Group group, JPanel container, int newGroupNumber, JCheckBox[] dayCheckBoxes) {
-        var oldGroup = new Group(group.getNumber(), group.getDay1Name(), group.getDay2Name(), group.getDay1(), group.getDay2(), group.getSunday());
-        // Pobieranie tekstu z JTextArea i zapis do listy acolytes w obiekcie Group
-        String[] acolytesNames = text.split("\n");
-        group.getAcolytes().clear(); // Wyczyszczenie listy acolytes
-        for (String name : acolytesNames) {
-            if (!name.trim().isEmpty()) { // Sprawdzenie czy nazwa nie jest pusta
-                Acolyte acolyte = new Acolyte(name.trim(), group.getNumber());
-                group.getAcolytes().add(acolyte); // Dodanie nowego akolity do listy
-            }
-        }
-        group.setDay1(null);
-        group.setDay2(null);
-        String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
-        String[] polishDayNames = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"};
-
-        for(int i=0; i<dayCheckBoxes.length; i++) {
-            if(dayCheckBoxes[i].isSelected()) {
-                if(group.getDay1() == null) {
-                    group.setDay1(DayOfWeek.valueOf(dayNames[i]));
-                    group.setDay1Name(polishDayNames[i]);
-                } else {
-                    group.setDay2(DayOfWeek.valueOf(dayNames[i]));
-                    group.setDay2Name(polishDayNames[i]);
-                }
-            }
-        }
-        group.setNumber(newGroupNumber);
-
-        // Tutaj możesz wywołać metodę serwisu do zapisu zmienionych akolitów do pliku JSON
-        try {
-            groupService.removeGroup(oldGroup.getNumber());
-            groupService.addGroup(group);
-
-            // Odświeżenie widoku grupy
-            Component[] components = container.getComponents(); // Pobranie wszystkich komponentów z kontenera
-            for (Component component : components) {
-                if (component instanceof JPanel panel) { // Sprawdzenie, czy komponent to JPanel
-                    Group panelGroup = (Group) panel.getClientProperty("group"); // Pobranie przypisanego obiektu Group z panelu
-                    if (panelGroup != null && panelGroup.equals(group)) { // Sprawdzenie czy grupy się zgadzają
-                        container.remove(panel); // Usunięcie starego panelu z kontenera
-                        JPanel updatedPanel = createGroupTile(group); // Utworzenie nowego panelu z zaktualizowanymi danymi
-                        container.add(updatedPanel); // Dodanie nowego panelu do kontenera
-                        container.revalidate(); // Ponowne przeliczenie układu kontenera
-                        container.repaint(); // Odświeżenie widoku kontenera
-                        break; // Przerwanie pętli, ponieważ znaleziono i zaktualizowano odpowiedni panel
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
