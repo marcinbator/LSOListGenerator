@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
-import main.models.Acolyte;
 import main.models.Group;
 
 import java.io.FileWriter;
@@ -30,28 +29,7 @@ public class GroupService {
     }
 
     public void addGroup(Group group) throws IOException {
-        groups.stream().filter(g -> g.getNumber() == group.getNumber()).findFirst().ifPresent(g -> {
-            throw new IllegalArgumentException("Group already exists");
-        });
         groups.add(group);
-        saveGroups();
-    }
-
-    public void addAcolyte(Acolyte acolyte, int groupNumber) throws IOException, IllegalArgumentException {
-        Group group = getGroup(groupNumber);
-        if (group == null) {
-            throw new IllegalArgumentException("Group not found");
-        }
-        group.getAcolytes().add(acolyte);
-        saveGroups();
-    }
-
-    public void removeAcolyte(Acolyte acolyte, int groupNumber) throws IOException {
-        Group group = getGroup(groupNumber);
-        if (group == null) {
-            throw new IllegalArgumentException("Group not found");
-        }
-        group.getAcolytes().remove(acolyte);
         saveGroups();
     }
 
@@ -70,10 +48,6 @@ public class GroupService {
     }
 
     //
-
-    private Group getGroup(int groupNumber) {
-        return groups.stream().filter(group -> group.getNumber() == groupNumber).findFirst().orElse(null);
-    }
 
     public void saveGroups() throws IOException {
         Writer writer = new FileWriter("groups.json");

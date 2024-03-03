@@ -14,6 +14,7 @@ import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -128,18 +129,36 @@ public class ApplicationController extends JFrame {
         groupNumberPanel.add(new JLabel("Numer grupy: "));
         groupNumberPanel.add(groupNumberTextField);
 
-
-        JCheckBox day1CheckBox = new JCheckBox(group.getDay1Name());
-        JCheckBox day2CheckBox = new JCheckBox(group.getDay2Name());
-        day1CheckBox.setSelected(true);
-        day2CheckBox.setSelected(true);
         JPanel daysPanel = new JPanel();
-        daysPanel.add(new JLabel("Dni: "));
-        daysPanel.add(day1CheckBox);
-        daysPanel.add(day2CheckBox);
+//
+        String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
+        String[] polishDayNames = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"};
 
+        daysPanel.add(new JLabel("Dni tygodnia: "));
+        JCheckBox[] dayCheckBoxes = new JCheckBox[dayNames.length];
+
+        for (int i=0; i<dayNames.length; i++) {
+            dayCheckBoxes[i] = new JCheckBox(polishDayNames[i]);
+            dayCheckBoxes[i].setSelected(group.getDay1().toString().equals(dayNames[i]) || group.getDay2().toString().equals(dayNames[i]));
+            daysPanel.add(dayCheckBoxes[i]);
+        }
+
+        for (JCheckBox checkBox : dayCheckBoxes) {
+            checkBox.addActionListener(e -> {
+                int selectedCount = 0;
+                for (JCheckBox cb : dayCheckBoxes) {
+                    if (cb.isSelected()) {
+                        selectedCount++;
+                    }
+                }
+                if (selectedCount > 2) {
+                    ((JCheckBox) e.getSource()).setSelected(false);
+                }
+            });
+        }
+//
         JButton confirmButton = new JButton("Zatwierdź");
-        confirmButton.addActionListener(e -> saveAcolytes(acolytesTextArea.getText(), group, tilePanel));
+        confirmButton.addActionListener(e -> saveGroup(acolytesTextArea.getText(), group, tilePanel, Integer.parseInt(groupNumberTextField.getText()), dayCheckBoxes));
 
         // Dodanie komponentów do panelu
         tilePanel.add(groupNumberPanel, BorderLayout.NORTH);
@@ -157,7 +176,7 @@ public class ApplicationController extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        var groups = groupService.getGroups();
+        var groups = groupService.getGroups().stream().sorted(Comparator.comparingInt(Group::getNumber)).toList();
         for (Group group : groups) {
             JPanel tilePanel = createGroupTile(group);
             JButton deleteButton = new JButton("Usuń grupę");
@@ -178,8 +197,11 @@ public class ApplicationController extends JFrame {
         // Dodanie przycisku do dodawania nowej grupy
         JButton addGroupButton = new JButton("Dodaj nową grupę");
         addGroupButton.addActionListener(e -> {
+            SundayMass sund = SundayMass.R;
+            var gr = !groupService.getGroups().isEmpty() ?groupService.getGroups().get(groupService.getGroups().size()-1) : null;
+            sund = SundayMass.getNext(gr != null ? gr.getSunday() : sund);
             // Utworzenie nowej grupy z domyślnymi danymi i dodanie jej do serwisu
-            Group newGroup = new Group(0, "Dzień 1", "Dzień 2", DayOfWeek.MONDAY, DayOfWeek.TUESDAY, SundayMass.S);
+            Group newGroup = new Group(groupService.getGroups().size()+1, "Dzień 1", "Dzień 2", DayOfWeek.MONDAY, DayOfWeek.TUESDAY, sund);
             try {
                 groupService.addGroup(newGroup);
                 // Dodanie nowego panelu dla nowej grupy
@@ -206,10 +228,7 @@ public class ApplicationController extends JFrame {
         groupTilesPanel.add(addGroupButton);
     }
 
-
-
-
-    private void saveAcolytes(String text, Group group, JPanel container) {
+    private void saveGroup(String text, Group group, JPanel container, int newGroupNumber, JCheckBox[] dayCheckBoxes) {
         var oldGroup = new Group(group.getNumber(), group.getDay1Name(), group.getDay2Name(), group.getDay1(), group.getDay2(), group.getSunday());
         // Pobieranie tekstu z JTextArea i zapis do listy acolytes w obiekcie Group
         String[] acolytesNames = text.split("\n");
@@ -220,11 +239,27 @@ public class ApplicationController extends JFrame {
                 group.getAcolytes().add(acolyte); // Dodanie nowego akolity do listy
             }
         }
+        group.setDay1(null);
+        group.setDay2(null);
+        String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
+        String[] polishDayNames = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"};
+
+        for(int i=0; i<dayCheckBoxes.length; i++) {
+            if(dayCheckBoxes[i].isSelected()) {
+                if(group.getDay1() == null) {
+                    group.setDay1(DayOfWeek.valueOf(dayNames[i]));
+                    group.setDay1Name(polishDayNames[i]);
+                } else {
+                    group.setDay2(DayOfWeek.valueOf(dayNames[i]));
+                    group.setDay2Name(polishDayNames[i]);
+                }
+            }
+        }
+        group.setNumber(newGroupNumber);
 
         // Tutaj możesz wywołać metodę serwisu do zapisu zmienionych akolitów do pliku JSON
         try {
             groupService.removeGroup(oldGroup.getNumber());
-            group.setNumber(oldGroup.getNumber());
             groupService.addGroup(group);
 
             // Odświeżenie widoku grupy
