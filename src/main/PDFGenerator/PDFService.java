@@ -1,4 +1,4 @@
-package main.pdfService;
+package main.PDFGenerator;
 
 import com.lowagie.text.pdf.BaseFont;
 import main.models.Day;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PDFGenerator {
+public class PDFService {
     public void generatePdf(Group group, Month month, Year year, String path) throws IOException {
         String html = parseThymeleafTemplate(group, month, year);
 

@@ -8,10 +8,8 @@ import java.util.UUID;
 public class Acolyte {
     private UUID id = UUID.randomUUID();
     private String name;
-    private int groupNumber;
 
-    public Acolyte(String name, int groupNumber) {
+    public Acolyte(String name) {
         this.name = name;
-        this.groupNumber = groupNumber;
     }
 }

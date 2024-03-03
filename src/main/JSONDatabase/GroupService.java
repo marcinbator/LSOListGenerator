@@ -1,10 +1,10 @@
-package main;
+package main.JSONDatabase;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
-import main.models.Acolyte;
+import lombok.Setter;
 import main.models.Group;
 
 import java.io.FileWriter;
@@ -17,6 +17,7 @@ import java.util.List;
 
 public class GroupService {
     @Getter
+    @Setter
     private List<Group> groups = new ArrayList<>();
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -28,33 +29,12 @@ public class GroupService {
     }
 
     public void addGroup(Group group) throws IOException {
-        groups.stream().filter(g -> g.getNumber() == group.getNumber()).findFirst().ifPresent(g -> {
-            throw new IllegalArgumentException("Group already exists");
-        });
         groups.add(group);
         saveGroups();
     }
 
-    public void addAcolyte(Acolyte acolyte) throws IOException, IllegalArgumentException {
-        Group group = getGroup(acolyte.getGroupNumber());
-        if (group == null) {
-            throw new IllegalArgumentException("Group not found");
-        }
-        group.getAcolytes().add(acolyte);
-        saveGroups();
-    }
-
-    public void removeAcolyte(Acolyte acolyte) throws IOException {
-        Group group = getGroup(acolyte.getGroupNumber());
-        if (group == null) {
-            throw new IllegalArgumentException("Group not found");
-        }
-        group.getAcolytes().remove(acolyte);
-        saveGroups();
-    }
-
-    public void removeGroup(Group group) throws IOException {
-        groups.remove(group);
+    public void removeGroup(int groupNumber) throws IOException {
+        groups.removeIf(group -> group.getNumber() == groupNumber);
         saveGroups();
     }
 
@@ -69,11 +49,7 @@ public class GroupService {
 
     //
 
-    private Group getGroup(int groupNumber) {
-        return groups.stream().filter(group -> group.getNumber() == groupNumber).findFirst().orElse(null);
-    }
-
-    private void saveGroups() throws IOException {
+    public void saveGroups() throws IOException {
         Writer writer = new FileWriter("groups.json");
         gson.toJson(groups, writer);
         writer.close();
