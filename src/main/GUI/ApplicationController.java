@@ -22,6 +22,7 @@ public class ApplicationController extends JFrame {
     private JButton generatePdfButton;
     private JButton addGroupButton;
     private JPanel groupTilesPanel;
+    private JLabel pathLabel;
     private String defaultSavePath = System.getProperty("user.home") + "\\Desktop";
     private final GroupService groupService;
     private final ApplicationService applicationService;
@@ -76,8 +77,10 @@ public class ApplicationController extends JFrame {
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             defaultSavePath = fileChooser.getSelectedFile().getAbsolutePath();
+            pathLabel.setText("Aktualna ścieżka: " + defaultSavePath);
         }
     }
+
 
     public void handleGenerateClick() {
         try {
@@ -158,7 +161,7 @@ public class ApplicationController extends JFrame {
     }
 
     private void displayCurrentSavePath(JPanel selectionPanel2) {
-        JLabel pathLabel = new JLabel("Aktualna ścieżka: " + defaultSavePath);
+        pathLabel = new JLabel("Aktualna ścieżka: " + defaultSavePath);
         selectionPanel2.add(pathLabel);
     }
 
