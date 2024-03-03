@@ -30,7 +30,7 @@ public class ApplicationController extends JFrame {
     private JPanel groupTilesPanel;
     private String defaultSavePath = System.getProperty("user.home") + "\\Desktop";
     String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
-    String[] polishDayNames = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"};
+    String[] polishDayNames = {"poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"};
 
     public ApplicationController() {
         this.groupService = new GroupService();
@@ -123,14 +123,14 @@ public class ApplicationController extends JFrame {
         }
     }
 
-    private void handleSaveGroupClick(String text, Group group, JPanel container, int newGroupNumber, JCheckBox[] dayCheckBoxes) {
+    private void handleSaveGroupClick(String text, Group group, JPanel container, JCheckBox[] dayCheckBoxes) {
         var oldGroup = new Group(group.getNumber(), group.getDay1Name(), group.getDay2Name(), group.getDay1(), group.getDay2(), group.getSunday());
 
         String[] acolytesNames = text.split("\n");
         group.getAcolytes().clear();
         for (String name : acolytesNames) {
             if (!name.trim().isEmpty()) {
-                Acolyte acolyte = new Acolyte(name.trim(), group.getNumber());
+                Acolyte acolyte = new Acolyte(name.trim());
                 group.getAcolytes().add(acolyte);
             }
         }
@@ -149,7 +149,6 @@ public class ApplicationController extends JFrame {
                 }
             }
         }
-        group.setNumber(newGroupNumber);
 
         refreshGroupContainer(group, container, oldGroup);
     }
@@ -212,9 +211,10 @@ public class ApplicationController extends JFrame {
         JPanel tilePanel = new JPanel();
         tilePanel.setLayout(new BoxLayout(tilePanel, BoxLayout.Y_AXIS)); // Ustawienie layoutu na BoxLayout w pionie
         tilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 265)); // Ustawienie maksymalnej wysokości
+        tilePanel.setMinimumSize(new Dimension(Integer.MAX_VALUE, 265)); // Ustawienie maksymalnej wysokości
 
         // Ustawienie pionowego paddingu
-        int verticalPadding = 30;
+        int verticalPadding = 25;
         tilePanel.setBorder(new EmptyBorder(verticalPadding, 0, verticalPadding, 0));
 
         // Panel dni tygodnia
@@ -228,21 +228,10 @@ public class ApplicationController extends JFrame {
             daysPanel.add(dayCheckBoxes[i]);
         }
 
-        for (JCheckBox checkBox : dayCheckBoxes) {
-            checkBox.addActionListener(e -> {
-                int selectedCount = 0;
-                for (JCheckBox cb : dayCheckBoxes) {
-                    if (cb.isSelected()) {
-                        selectedCount++;
-                    }
-                }
-                if (selectedCount > 2) {
-                    ((JCheckBox) e.getSource()).setSelected(false);
-                }
-            });
-        }
-
+        JPanel acolytesPanel = new JPanel(new FlowLayout());
         // Pozostałe elementy
+        JLabel acolytesLabel = new JLabel("Podaj ministrantów, oddzielając ich za pomocą [ENTER]: ");
+        acolytesPanel.add(acolytesLabel);
         JTextArea acolytesTextArea = new JTextArea(5, 15);
         acolytesTextArea.setEditable(true);
 
@@ -253,12 +242,8 @@ public class ApplicationController extends JFrame {
         acolytesTextArea.setText(acolytesText.toString());
 
 
-        JTextField groupNumberTextField = new JTextField(String.valueOf(group.getNumber()), 10);
-        groupNumberTextField.setEditable(false);
-
         JPanel groupNumberPanel = new JPanel();
-        groupNumberPanel.add(new JLabel("Numer grupy: "));
-        groupNumberPanel.add(groupNumberTextField);
+        groupNumberPanel.add(new JLabel("Grupa " + group.getNumber()));
 
         JButton confirmButton = new JButton("Zapisz zmiany");
         confirmButton.setVisible(false);
@@ -269,7 +254,6 @@ public class ApplicationController extends JFrame {
         buttonPanel.add(confirmButton);
         buttonPanel.add(deleteButton);
 
-        Arrays.stream(dayCheckBoxes).forEach(dayCheckBox -> dayCheckBox.addActionListener(e -> confirmButton.setVisible(true)));
 
         acolytesTextArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -289,13 +273,14 @@ public class ApplicationController extends JFrame {
         });
 
         confirmButton.addActionListener(e -> {
-            handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, Integer.parseInt(groupNumberTextField.getText()), dayCheckBoxes);
+            handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, dayCheckBoxes);
             confirmButton.setVisible(false);
         });
 
         // Dodanie wszystkich komponentów do panelu głównego
         tilePanel.add(groupNumberPanel); // Panel numeru grupy
         tilePanel.add(daysPanel); // Panel dni tygodnia
+        tilePanel.add(acolytesPanel); // Panel dni tygodnia
         tilePanel.add(new JScrollPane(acolytesTextArea)); // Panel tekstowy z acolytes
         tilePanel.add(buttonPanel); // Panel przycisków
         tilePanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Wyrównanie do lewej krawędzi
@@ -303,6 +288,23 @@ public class ApplicationController extends JFrame {
         deleteButton.addActionListener(e -> {
             handleDeleteGroupClick(groupTilesPanel, group, tilePanel);
         });
+
+        for (JCheckBox checkBox : dayCheckBoxes) {
+            checkBox.addActionListener(e -> {
+                int selectedCount = 0;
+                for (JCheckBox cb : dayCheckBoxes) {
+                    if (cb.isSelected()) {
+                        selectedCount++;
+                    }
+                }
+                if (selectedCount > 2) {
+                    ((JCheckBox) e.getSource()).setSelected(false);
+                }
+                else{
+                    confirmButton.setVisible(true);
+                }
+            });
+        }
 
         return tilePanel;
     }
@@ -313,9 +315,10 @@ public class ApplicationController extends JFrame {
         groupTilesPanel = new JPanel();
         groupTilesPanel.setLayout(new BoxLayout(groupTilesPanel, BoxLayout.Y_AXIS));
         groupTilesPanel.setBorder(BorderFactory.createTitledBorder("Grupy"));
-        groupTilesPanel.setMinimumSize(new Dimension(600, 500));
+        groupTilesPanel.setMinimumSize(new Dimension(600, 400));
 
         scrollPane = new JScrollPane(groupTilesPanel);
+        scrollPane.setPreferredSize(new Dimension(600, 400));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -325,6 +328,7 @@ public class ApplicationController extends JFrame {
             groupTilesPanel.add(tilePanel);
         }
     }
+
 
 
     private void initializeMonthComboBox(JPanel selectionPanel1) {

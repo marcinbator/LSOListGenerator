@@ -1,42 +1,28 @@
 [
   {
     "number": 1,
-    "acolytes": [],
-    "day1Name": "Poniedziałek",
-    "day2Name": "Czwartek",
+    "acolytes": [
+      {
+        "id": "293ab218-6798-415e-9569-54ae02cfa378",
+        "name": "Marcin Bator"
+      },
+      {
+        "id": "593b815b-521f-4655-932e-8bdef5f114f6",
+        "name": "Michał Bator"
+      },
+      {
+        "id": "af4ae6cf-67bc-4ed9-8d04-713bd33354b1",
+        "name": "dfgsdf sdfgsdfg"
+      }
+    ],
+    "day1Name": "środa",
+    "day2Name": "sobota",
     "sunday": "S",
-    "day1": "MONDAY",
-    "day2": "THURSDAY"
+    "day1": "WEDNESDAY",
+    "day2": "SATURDAY"
   },
   {
     "number": 2,
-    "acolytes": [],
-    "day1Name": "Poniedziałek",
-    "day2Name": "Czwartek",
-    "sunday": "P",
-    "day1": "MONDAY",
-    "day2": "THURSDAY"
-  },
-  {
-    "number": 3,
-    "acolytes": [],
-    "day1Name": "Poniedziałek",
-    "day2Name": "Czwartek",
-    "sunday": "R",
-    "day1": "MONDAY",
-    "day2": "THURSDAY"
-  },
-  {
-    "number": 4,
-    "acolytes": [],
-    "day1Name": "Poniedziałek",
-    "day2Name": "Czwartek",
-    "sunday": "S",
-    "day1": "MONDAY",
-    "day2": "THURSDAY"
-  },
-  {
-    "number": 5,
     "acolytes": [],
     "day1Name": "Poniedziałek",
     "day2Name": "Czwartek",

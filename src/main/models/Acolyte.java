@@ -9,7 +9,7 @@ public class Acolyte {
     private UUID id = UUID.randomUUID();
     private String name;
 
-    public Acolyte(String name, int groupNumber) {
+    public Acolyte(String name) {
         this.name = name;
     }
 }
