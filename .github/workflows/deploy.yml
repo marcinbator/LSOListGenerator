@@ -33,10 +33,16 @@ jobs:
             --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication \
             --type deb \
             --icon src/main/resources/logo.png \
+            --dest .
 
-  
+      - name: Upload DEB as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lso-deb
+          path: LSOListGenerator*.deb
+
   build-windows:
-    needs: [ build-linux ]
+    needs: [build-linux]
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -53,10 +59,17 @@ jobs:
 
       - name: Create EXE package
         run: |
-          jpackage --input target\ --name LSOListGenerator --main-jar LSOListGenerator-1.0.jar --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication --type exe --icon src\main\resources\logo.png
+          jpackage -input target\ --name LSOListGenerator --main-jar LSOListGenerator-1.0.jar --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication --type exe --icon src\main\resources\logo.png --dest .
+        shell: pwsh
+
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lso-exe
+          path: LSOListGenerator*.exe
 
   release:
-    needs: [ build-linux, build-windows ]
+    needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
     steps:
       - name: Download DEB artifact
