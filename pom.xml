@@ -50,7 +50,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main.LSOListGeneratorApplication</mainClass>
+                            <mainClass>main.pl.bator.lso_list_generator.LSOListGeneratorApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
