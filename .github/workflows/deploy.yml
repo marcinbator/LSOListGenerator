@@ -2,6 +2,9 @@ name: Deploy
 on:
   push:
     branches: [main]
+
+permissions:
+  contents: write
     
 jobs:
   build-linux:
@@ -42,7 +45,6 @@ jobs:
           path: lsolistgenerator*.deb
 
   build-windows:
-    needs: [build-linux]
     runs-on: windows-latest
     steps:
       - name: Checkout code
