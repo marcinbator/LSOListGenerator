@@ -1,7 +1,0 @@
-- automatyczne sortowanie ministrantów po nazwisku
-- możliwość wyboru dowolnej ilości dni obowiązkowych
-- możliwość edycji dyżurów mszy niedzielnych
-- poprawki wizualne (legenda w wierszu, pogrubienie niedzieli ostatniego dnia miesiąca)
-- dodawanie liderów grup
-- automatyczny zapis backupów przy usunięciu grupy i możliwość wczytania pliku .json
-- potwierdzanie usunięcia grupy

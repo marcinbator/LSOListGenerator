@@ -4,7 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="72bc8391-a683-407d-a9a9-8e762a2e9d02" name="Changes" comment="refactor: #main structural refactor" />
+    <list default="true" id="72bc8391-a683-407d-a9a9-8e762a2e9d02" name="Changes" comment="refactor: #main gitignore">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/deploy-linux.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/deploy-windows.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/installer-linux.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/installer-windows.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/LSOListGenerator-1.0-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/LSOListGenerator.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/arialuni.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/config.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/resources/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/resources/arialuni.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/resources/groups.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/resources/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/resources/thymeleaf_template.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/installer_utils/script.iss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,27 +31,30 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "marcinbator"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;marcinbator&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/marcinbator/LSOListGenerator.git",
-    "accountId": "71fa7ca9-4d85-4994-ab75-6ff86bb9cdc6"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/marcinbator/LSOListGenerator.git&quot;,
+    &quot;accountId&quot;: &quot;71fa7ca9-4d85-4994-ab75-6ff86bb9cdc6&quot;
   }
-}]]></component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2vuB7I971EYfPELx1EeOlkT5Zmt" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -42,11 +63,14 @@
   "keyToString": {
     "Application.LSOListGeneratorApplication.executor": "Run",
     "Application.pl.bator.lso_list_generator.LSOListGeneratorApplication.executor": "Run",
+    "Maven.LSOListGenerator [install].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHELLCHECK.PATH": "/home/marcin/.local/share/JetBrains/IntelliJIdea2024.2/Shell Script/shellcheck",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/mnt/Common/Repozytorium/Code/Desktop/LSOListGenerator/.github/workflows",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -59,6 +83,10 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.github/workflows" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main" />
       <recent name="$PROJECT_DIR$/src" />
@@ -110,14 +138,34 @@
       <option name="project" value="LOCAL" />
       <updated>1744985634230</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="refactor: #main gitignore">
+      <option name="closed" value="true" />
+      <created>1744998115684</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744998115684</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="refactor: #main structural refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: #main structural refactor" />
+    <MESSAGE value="refactor: #main gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: #main gitignore" />
   </component>
 </project>
