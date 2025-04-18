@@ -85,10 +85,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
+          name: Release v${{ github.run_number }}
+          tag_name: v${{ github.run_number }}
           files: |
-            LSOListGenerator*.deb
-            LSOListGenerator*.exe
+            lsolistgenerator*.deb
+            lsolistgenerator*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
