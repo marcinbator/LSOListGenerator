@@ -61,7 +61,7 @@ jobs:
 
       - name: Create EXE package
         run: |
-          jpackage --input target\ --name LSOListGenerator --main-jar LSOListGenerator-1.0.jar --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication --type exe --icon src\main\resources\logo.png --dest .
+          jpackage --input target\ --name LSOListGenerator --main-jar LSOListGenerator-1.0.jar --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication --type exe --icon src\main\resources\logo.png --dest . --runtime-image jre
         shell: pwsh
 
       - name: Upload EXE as artifact
