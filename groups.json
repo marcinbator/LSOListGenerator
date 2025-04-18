@@ -1,0 +1,20 @@
+[
+  {
+    "number": 1,
+    "acolytes": [
+      {
+        "id": "243c3459-968a-45ad-9cd7-aa10be209b5a",
+        "name": "afsdf sdfgs"
+      },
+      {
+        "id": "66b1f786-f45b-444b-abe7-a447c922c509",
+        "name": "dfsgdf sadfs"
+      }
+    ],
+    "day1Name": "poniedziałek",
+    "day2Name": "czwartek",
+    "sunday": "S",
+    "day1": "MONDAY",
+    "day2": "THURSDAY"
+  }
+]
