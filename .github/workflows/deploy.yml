@@ -73,17 +73,17 @@ jobs:
 
       - name: Create MSI package
         run: |
-          jpackage `
-            --input target\ `
-            --name LSOListGenerator `
-            --main-jar LSOListGenerator-1-jar-with-dependencies.jar `
-            --main-class "pl.bator.lso_list_generator.LSOListGeneratorApplication" `
-            --type msi `
-            --icon src\main\resources\logo.ico `
-            --dest . `
-            --app-version "1.0.26" `
-            --win-shortcut `
-            --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000"
+          jpackage --input target\ \
+            --name LSOListGenerator \
+            --main-jar LSOListGenerator-1-jar-with-dependencies.jar \
+            --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication \
+            --type msi \
+            --icon src\main\resources\logo.ico \
+            --dest . \
+            --app-version 1.0.26 \
+            --win-shortcut \
+            --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000" \
+            --win-upgrade
         shell: pwsh
 
       - name: Upload MSI as artifact
