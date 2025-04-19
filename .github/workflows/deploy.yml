@@ -62,7 +62,7 @@ jobs:
           java-version: "17"
 
       - name: Set version
-        run: echo "VERSION=${{ github.run_number }}" >> $env:GITHUB_ENV
+        run: echo "VERSION=1.0.${{ github.run_number }}" >> $env:GITHUB_ENV
         shell: pwsh
 
       - name: Build with Maven
