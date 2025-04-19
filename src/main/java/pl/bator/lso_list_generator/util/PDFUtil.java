@@ -1,4 +1,4 @@
-package pl.bator.lso_list_generator.service;
+package pl.bator.lso_list_generator.util;
 
 import com.lowagie.text.pdf.BaseFont;
 import org.thymeleaf.TemplateEngine;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PDFService {
+public class PDFUtil {
     public void generatePdf(Group group, Month month, Year year, String path) throws IOException {
         String html = parseThymeleafTemplate(group, month, year);
 

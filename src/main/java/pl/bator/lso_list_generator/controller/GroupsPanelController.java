@@ -1,6 +1,6 @@
-package pl.bator.lso_list_generator.service;
+package pl.bator.lso_list_generator.controller;
 
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import pl.bator.lso_list_generator.model.Group;
 import pl.bator.lso_list_generator.model.Person;
 import pl.bator.lso_list_generator.model.SundayMass;
@@ -14,19 +14,36 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.util.Comparator;
 
-public class ApplicationService {
+@RequiredArgsConstructor
+public class GroupsPanelController {
     private final String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
     private final String[] polishDayNames = {"poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"};
-    private final GroupJSONRepository groupJSONRepository;
-    @Setter
-    private JPanel groupTilesPanel;
 
-    public ApplicationService(GroupJSONRepository groupJSONRepository) {
-        this.groupJSONRepository = groupJSONRepository;
+    private final GroupJSONRepository groupJSONRepository;
+
+    public void initView(JPanel groupPanel, JScrollPane scrollPane, JPanel buttonPanel) {
+        groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
+        groupPanel.setBorder(BorderFactory.createTitledBorder("Grupy"));
+        groupPanel.setMinimumSize(new Dimension(600, 400));
+
+        scrollPane.setPreferredSize(new Dimension(600, 400));
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        var addGroupButton = new JButton("Dodaj nową grupę");
+        addGroupButton.addActionListener(e -> handleAddNewGroup(groupPanel));
+        buttonPanel.add(addGroupButton);
+
+        var groups = groupJSONRepository.getGroups().stream().sorted(Comparator.comparingInt(Group::getNumber)).toList();
+        for (Group group : groups) {
+            JPanel tilePanel = createGroupTile(group, groupPanel);
+            groupPanel.add(tilePanel);
+        }
     }
 
-    public JPanel createGroupTile(Group group) {
+    public JPanel createGroupTile(Group group, JPanel groupTilesPanel) {
         JPanel tilePanel = new JPanel();
         tilePanel.setLayout(new BoxLayout(tilePanel, BoxLayout.Y_AXIS));
         tilePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 265));
@@ -88,7 +105,7 @@ public class ApplicationService {
         });
 
         confirmButton.addActionListener(e -> {
-            handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, dayCheckBoxes);
+            handleSaveGroupClick(acolytesTextArea.getText(), group, tilePanel, dayCheckBoxes, groupTilesPanel);
             confirmButton.setVisible(false);
         });
 
@@ -102,7 +119,7 @@ public class ApplicationService {
         deleteButton.addActionListener(e -> handleDeleteGroupClick(groupTilesPanel, group, tilePanel));
 
         for (JCheckBox checkBox : dayCheckBoxes) {
-            checkBox.addActionListener(e -> ApplicationService.handleCheckBoxCLick(e, dayCheckBoxes, confirmButton));
+            checkBox.addActionListener(e -> GroupsPanelController.handleCheckBoxCLick(e, dayCheckBoxes, confirmButton));
         }
 
         return tilePanel;
@@ -116,7 +133,7 @@ public class ApplicationService {
         Group newGroup = new Group(groupJSONRepository.getGroups().size() + 1, "Poniedziałek", "Czwartek", DayOfWeek.MONDAY, DayOfWeek.THURSDAY, sund);
         try {
             groupJSONRepository.addGroup(newGroup);
-            JPanel newTilePanel = createGroupTile(newGroup);
+            JPanel newTilePanel = createGroupTile(newGroup, groupTilesPanel);
             groupTilesPanel.add(newTilePanel);
             groupTilesPanel.revalidate();
             groupTilesPanel.repaint();
@@ -138,7 +155,7 @@ public class ApplicationService {
         }
     }
 
-    private void refreshGroupContainer(Group group, JPanel container, Group oldGroup) {
+    private void refreshGroupContainer(Group group, JPanel container, Group oldGroup, JPanel groupTilePanel) {
         try {
             groupJSONRepository.removeGroup(oldGroup.getNumber());
             groupJSONRepository.addGroup(group);
@@ -149,7 +166,7 @@ public class ApplicationService {
                     Group panelGroup = (Group) panel.getClientProperty("group");
                     if (panelGroup != null && panelGroup.equals(group)) {
                         container.remove(panel);
-                        JPanel updatedPanel = createGroupTile(group);
+                        JPanel updatedPanel = createGroupTile(group, groupTilePanel);
                         container.add(updatedPanel);
                         container.revalidate();
                         container.repaint();
@@ -176,7 +193,7 @@ public class ApplicationService {
         }
     }
 
-    private void handleSaveGroupClick(String text, Group group, JPanel container, JCheckBox[] dayCheckBoxes) {
+    private void handleSaveGroupClick(String text, Group group, JPanel container, JCheckBox[] dayCheckBoxes, JPanel groupTilePanel) {
         var oldGroup = new Group(group.getNumber(), group.getDay1Name(), group.getDay2Name(), group.getDay1(), group.getDay2(), group.getSunday());
 
         String[] acolytesNames = text.split("\n");
@@ -203,6 +220,6 @@ public class ApplicationService {
             }
         }
 
-        refreshGroupContainer(group, container, oldGroup);
+        refreshGroupContainer(group, container, oldGroup, groupTilePanel);
     }
 }
