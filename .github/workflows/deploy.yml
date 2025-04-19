@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lso-deb
-          path: LSOListGenerator*.deb
+          path: lsolistgenerator*.deb
 
   build-windows:
     runs-on: windows-latest
@@ -76,7 +76,7 @@ jobs:
           jpackage `
             --input target\ `
             --name LSOListGenerator `
-            --main-jar LSOListGenerator-${{ env.VERSION }}.jar `
+            --main-jar LSOListGenerator-1-jar-with-dependencies.jar
             --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication `
             --type msi `
             --icon src\main\resources\logo.ico `
@@ -112,7 +112,7 @@ jobs:
           name: Release v${{ github.run_number }}
           tag_name: v${{ github.run_number }}
           files: |
-            LSOListGenerator*.deb
+            lsolistgenerator*.deb
             LSOListGenerator*.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
