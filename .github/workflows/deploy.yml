@@ -81,10 +81,9 @@ jobs:
             --type msi `
             --icon src\main\resources\logo.ico `
             --dest . `
-            --app-version "1.0.26" `
+            --app-version ${{ env.VERSION }} `
             --win-shortcut `
-            --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000" `
-            --win-upgrade
+            --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000"
         shell: pwsh
 
       - name: Upload MSI as artifact
