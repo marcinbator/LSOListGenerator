@@ -40,9 +40,8 @@ public class GroupService {
 
     public ArrayList<Group> readGroups() {
         try {
-            Path path = Path.of("groups.json");
+            Path path = Path.of(System.getProperty("user.home"), "lso-groups.json");
             if (!Files.exists(path)) {
-                Files.createDirectories(path.getParent());
                 Files.createFile(path);
                 return new ArrayList<>();
             }
@@ -57,7 +56,8 @@ public class GroupService {
     //
 
     public void saveGroups() throws IOException {
-        Writer writer = new FileWriter("groups.json");
+        Path path = Path.of(System.getProperty("user.home"), "lso-groups.json");
+        Writer writer = Files.newBufferedWriter(path);
         gson.toJson(groups, writer);
         writer.close();
     }
