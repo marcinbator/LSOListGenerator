@@ -1,4 +1,4 @@
-package pl.bator.lso_list_generator.models;
+package pl.bator.lso_list_generator.model;
 
 public enum SundayMass {
     R, S, P;

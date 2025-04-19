@@ -2,14 +2,14 @@
 
 ## Opis
 
-Program na platformę Windows do generowania tabel/list ministrantów. Pozwala na edycję grup, ustalanie dni
+Program do generowania tabel/list ministrantów. Pozwala na edycję grup, ustalanie dni
 obowiązkowych, zapis grup, generowanie dowolnego miesiąca/roku.
 Generuje listę w postaci pliku .pdf w wybranej przez użytkownika lokalizacji.
 
 ## Technologie
 
 - Java 17
-- Java Swing (pl.bator.lso_list_generator.GUI)
+- Java Swing (pl.bator.lso_list_generator.controller)
 - [Flying Saucer](https://link-url-here.org](https://github.com/flyingsaucerproject/flyingsaucer)https://github.com/flyingsaucerproject/flyingsaucer)
   library (PDF generation)
 

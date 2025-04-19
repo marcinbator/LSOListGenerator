@@ -1,4 +1,4 @@
-package pl.bator.lso_list_generator.PDFGenerator;
+package pl.bator.lso_list_generator.service;
 
 import com.lowagie.text.pdf.BaseFont;
 import org.thymeleaf.TemplateEngine;
@@ -6,9 +6,9 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
-import pl.bator.lso_list_generator.models.Day;
-import pl.bator.lso_list_generator.models.Group;
-import pl.bator.lso_list_generator.models.SundayMass;
+import pl.bator.lso_list_generator.model.Day;
+import pl.bator.lso_list_generator.model.Group;
+import pl.bator.lso_list_generator.model.SundayMass;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class PDFService {
         context.setVariable("days", days);
         context.setVariable("date", LocalDateTime.now());
 
-        return templateEngine.process("thymeleaf_template", context);
+        return templateEngine.process("list_template", context);
     }
 
 }

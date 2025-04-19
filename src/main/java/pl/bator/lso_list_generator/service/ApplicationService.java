@@ -1,10 +1,10 @@
-package pl.bator.lso_list_generator.GUI;
+package pl.bator.lso_list_generator.service;
 
 import lombok.Setter;
-import pl.bator.lso_list_generator.JSONDatabase.GroupService;
-import pl.bator.lso_list_generator.models.Acolyte;
-import pl.bator.lso_list_generator.models.Group;
-import pl.bator.lso_list_generator.models.SundayMass;
+import pl.bator.lso_list_generator.model.Group;
+import pl.bator.lso_list_generator.model.Person;
+import pl.bator.lso_list_generator.model.SundayMass;
+import pl.bator.lso_list_generator.repository.GroupJSONRepository;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,12 +18,12 @@ import java.time.DayOfWeek;
 public class ApplicationService {
     private final String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
     private final String[] polishDayNames = {"poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"};
-    private final GroupService groupService;
+    private final GroupJSONRepository groupJSONRepository;
     @Setter
     private JPanel groupTilesPanel;
 
-    public ApplicationService(GroupService groupService) {
-        this.groupService = groupService;
+    public ApplicationService(GroupJSONRepository groupJSONRepository) {
+        this.groupJSONRepository = groupJSONRepository;
     }
 
     public JPanel createGroupTile(Group group) {
@@ -53,8 +53,8 @@ public class ApplicationService {
         acolytesTextArea.setEditable(true);
 
         StringBuilder acolytesText = new StringBuilder();
-        for (Acolyte acolyte : group.getAcolytes()) {
-            acolytesText.append(acolyte.getName()).append("\n");
+        for (Person person : group.getPeople()) {
+            acolytesText.append(person.getName()).append("\n");
         }
         acolytesTextArea.setText(acolytesText.toString());
 
@@ -110,12 +110,12 @@ public class ApplicationService {
 
     public void handleAddNewGroup(JPanel groupTilesPanel) {
         SundayMass sund = SundayMass.R;
-        var gr = !groupService.getGroups().isEmpty() ? groupService.getGroups().get(groupService.getGroups().size() - 1) : null;
+        var gr = !groupJSONRepository.getGroups().isEmpty() ? groupJSONRepository.getGroups().get(groupJSONRepository.getGroups().size() - 1) : null;
         sund = SundayMass.getNext(gr != null ? gr.getSunday() : sund);
 
-        Group newGroup = new Group(groupService.getGroups().size() + 1, "Poniedziałek", "Czwartek", DayOfWeek.MONDAY, DayOfWeek.THURSDAY, sund);
+        Group newGroup = new Group(groupJSONRepository.getGroups().size() + 1, "Poniedziałek", "Czwartek", DayOfWeek.MONDAY, DayOfWeek.THURSDAY, sund);
         try {
-            groupService.addGroup(newGroup);
+            groupJSONRepository.addGroup(newGroup);
             JPanel newTilePanel = createGroupTile(newGroup);
             groupTilesPanel.add(newTilePanel);
             groupTilesPanel.revalidate();
@@ -129,7 +129,7 @@ public class ApplicationService {
 
     private void handleDeleteGroupClick(JPanel groupTilesPanel, Group newGroup, JPanel newTilePanel) {
         try {
-            groupService.removeGroup(newGroup.getNumber());
+            groupJSONRepository.removeGroup(newGroup.getNumber());
             groupTilesPanel.remove(newTilePanel);
             groupTilesPanel.revalidate();
             groupTilesPanel.repaint();
@@ -140,8 +140,8 @@ public class ApplicationService {
 
     private void refreshGroupContainer(Group group, JPanel container, Group oldGroup) {
         try {
-            groupService.removeGroup(oldGroup.getNumber());
-            groupService.addGroup(group);
+            groupJSONRepository.removeGroup(oldGroup.getNumber());
+            groupJSONRepository.addGroup(group);
 
             Component[] components = container.getComponents();
             for (Component component : components) {
@@ -180,11 +180,11 @@ public class ApplicationService {
         var oldGroup = new Group(group.getNumber(), group.getDay1Name(), group.getDay2Name(), group.getDay1(), group.getDay2(), group.getSunday());
 
         String[] acolytesNames = text.split("\n");
-        group.getAcolytes().clear();
+        group.getPeople().clear();
         for (String name : acolytesNames) {
             if (!name.trim().isEmpty()) {
-                Acolyte acolyte = new Acolyte(name.trim());
-                group.getAcolytes().add(acolyte);
+                Person person = new Person(name.trim());
+                group.getPeople().add(person);
             }
         }
 

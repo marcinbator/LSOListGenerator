@@ -1,6 +1,6 @@
 package pl.bator.lso_list_generator;
 
-import pl.bator.lso_list_generator.GUI.ApplicationController;
+import pl.bator.lso_list_generator.controller.ApplicationController;
 
 import javax.swing.*;
 

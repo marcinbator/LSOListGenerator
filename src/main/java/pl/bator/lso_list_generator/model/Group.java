@@ -1,4 +1,4 @@
-package pl.bator.lso_list_generator.models;
+package pl.bator.lso_list_generator.model;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class Group {
     private int number;
-    private List<Acolyte> acolytes = new ArrayList<>();
+    private List<Person> people = new ArrayList<>();
     private String day1Name;
     private String day2Name;
     private SundayMass sunday;

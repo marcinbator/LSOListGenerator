@@ -79,8 +79,8 @@
                 th:style="${day.obligatory ? 'background: #b8b4b4' : (day.sunday ? 'border: 2px solid black; border-bottom: none' : 'background: #ebebeb')}"
         ></td>
     </tr>
-    <tr th:each="acolyte, iterStat : ${group.acolytes}">
-        <td style="text-align: left" th:text="${acolyte.name}"></td>
+    <tr th:each="person, iterStat : ${group.getPeople}">
+        <td style="text-align: left" th:text="${person.name}"></td>
         <td
                 th:each="day : ${days}"
                 th:style="${day.obligatory ? 'background: #b8b4b4' : (day.sunday ? (!iterStat.last ? 'border-right: 2px solid black; border-left: 2px solid black;' : 'border-right: 2px solid black; border-left: 2px solid black; border-bottom: 2px solid black') : '')}"

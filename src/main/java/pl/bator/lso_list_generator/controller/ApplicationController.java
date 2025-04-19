@@ -1,8 +1,9 @@
-package pl.bator.lso_list_generator.GUI;
+package pl.bator.lso_list_generator.controller;
 
-import pl.bator.lso_list_generator.JSONDatabase.GroupService;
-import pl.bator.lso_list_generator.PDFGenerator.PDFService;
-import pl.bator.lso_list_generator.models.Group;
+import pl.bator.lso_list_generator.model.Group;
+import pl.bator.lso_list_generator.repository.GroupJSONRepository;
+import pl.bator.lso_list_generator.service.ApplicationService;
+import pl.bator.lso_list_generator.service.PDFService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,13 +25,22 @@ public class ApplicationController extends JFrame {
     private JPanel groupTilesPanel;
     private JLabel pathLabel;
     private String defaultSavePath = System.getProperty("user.home") + "\\Desktop";
-    private final GroupService groupService;
-    private final ApplicationService applicationService;
+    private GroupJSONRepository groupJSONRepository;
+    private ApplicationService applicationService;
 
     public ApplicationController() {
-        this.groupService = new GroupService();
-        this.applicationService = new ApplicationService(groupService);
-        initWindow();
+        try {
+            this.groupJSONRepository = new GroupJSONRepository();
+            this.applicationService = new ApplicationService(groupJSONRepository);
+            initWindow();
+        } catch (IOException e) {
+            showErrorAndExit("Błąd podczas inicjalizacji aplikacji: " + e.getMessage());
+        }
+    }
+
+    private void showErrorAndExit(String message) {
+        javax.swing.JOptionPane.showMessageDialog(null, message, "Błąd krytyczny", javax.swing.JOptionPane.ERROR_MESSAGE);
+        System.exit(1);
     }
 
     private void initWindow() {
@@ -105,8 +115,8 @@ public class ApplicationController extends JFrame {
             Month month = Month.of(monthIndex + 1);
 
             PDFService pdfService = new PDFService();
-            for (int i = 0; i < groupService.getGroups().size(); i++) {
-                pdfService.generatePdf(groupService.getGroups().get(i), month, Year.of(selectedYear), defaultSavePath);
+            for (int i = 0; i < groupJSONRepository.getGroups().size(); i++) {
+                pdfService.generatePdf(groupJSONRepository.getGroups().get(i), month, Year.of(selectedYear), defaultSavePath);
             }
             JOptionPane.showMessageDialog(this, "Wygenerowano pomyślnie!");
         } catch (IOException e) {
@@ -129,7 +139,7 @@ public class ApplicationController extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        var groups = groupService.getGroups().stream().sorted(Comparator.comparingInt(Group::getNumber)).toList();
+        var groups = groupJSONRepository.getGroups().stream().sorted(Comparator.comparingInt(Group::getNumber)).toList();
         for (Group group : groups) {
             JPanel tilePanel = applicationService.createGroupTile(group);
             groupTilesPanel.add(tilePanel);
