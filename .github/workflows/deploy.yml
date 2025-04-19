@@ -74,12 +74,12 @@ jobs:
           jpackage `
             --input target\ `
             --name LSOListGenerator `
-            --main-jar LSOListGenerator-$env:VERSION.jar `
+            --main-jar LSOListGenerator-${{ env.VERSION }}.jar `
             --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication `
             --type msi `
             --icon src\main\resources\logo.ico `
             --dest . `
-            --app-version $env:VERSION `
+            --app-version ${{ env.VERSION }} `
             --win-shortcut `
             --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000"
         shell: pwsh
