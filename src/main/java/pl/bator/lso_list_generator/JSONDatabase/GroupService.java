@@ -38,7 +38,7 @@ public class GroupService {
         saveGroups();
     }
 
-    public ArrayList<Group> readGroups() {
+    public ArrayList<Group> readGroups() { 
         try {
             Path path = Path.of(System.getProperty("user.home"), "lso-groups.json");
             if (!Files.exists(path)) {
@@ -56,6 +56,7 @@ public class GroupService {
     //
 
     public void saveGroups() throws IOException {
+        
         Path path = Path.of(System.getProperty("user.home"), "lso-groups.json");
         Writer writer = Files.newBufferedWriter(path);
         gson.toJson(groups, writer);
