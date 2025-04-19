@@ -64,11 +64,11 @@ jobs:
           jpackage --input target\ --name LSOListGenerator --main-jar LSOListGenerator-1.0.jar --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication --type msi --icon src\main\resources\logo.ico --dest . --win-shortcut
         shell: pwsh
 
-      - name: Upload EXE as artifact
+      - name: Upload MSI as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: lso-exe
-          path: LSOListGenerator*.exe
+          name: lso-msi
+          path: LSOListGenerator*.msi
 
   release:
     needs: [build-linux, build-windows]
@@ -79,10 +79,10 @@ jobs:
         with:
           name: lso-deb
 
-      - name: Download EXE artifact
+      - name: Download MSI artifact
         uses: actions/download-artifact@v4
         with:
-          name: lso-exe
+          name: lso-msi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -91,6 +91,6 @@ jobs:
           tag_name: v${{ github.run_number }}
           files: |
             lsolistgenerator*.deb
-            LSOListGenerator*.exe
+            LSOListGenerator*.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
