@@ -15,5 +15,4 @@ Generuje listę w postaci pliku .pdf w wybranej przez użytkownika lokalizacji.
 
 ## Instalacja
 
-Pobierz dostępny w zakładce Releases plik *LSOListGeneratorInstaller.exe*. Następnie uruchom go jako administrator i
-postępuj zgodnie z instrukcjami na ekranie.
+Pobierz dostępny w zakładce Releases plik instalatora .msi (Windows) lub .deb (Linux). Postępuj zgodnie z instrukcjami na ekranie.
