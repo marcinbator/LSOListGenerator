@@ -16,5 +16,14 @@
     "sunday": "S",
     "day1": "MONDAY",
     "day2": "THURSDAY"
+  },
+  {
+    "number": 2,
+    "acolytes": [],
+    "day1Name": "Poniedziałek",
+    "day2Name": "Czwartek",
+    "sunday": "P",
+    "day1": "MONDAY",
+    "day2": "THURSDAY"
   }
 ]

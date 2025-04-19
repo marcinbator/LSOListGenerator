@@ -40,7 +40,13 @@ public class GroupService {
 
     public ArrayList<Group> readGroups() {
         try {
-            String json = Files.readString(Path.of("groups.json"));
+            Path path = Path.of("groups.json");
+            if (!Files.exists(path)) {
+                Files.createDirectories(path.getParent());
+                Files.createFile(path);
+                return new ArrayList<>();
+            }
+            String json = Files.readString(path);
             return gson.fromJson(json, new TypeToken<List<Group>>() {
             }.getType());
         } catch (IOException e) {
