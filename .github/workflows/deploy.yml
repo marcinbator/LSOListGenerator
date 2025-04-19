@@ -76,15 +76,15 @@ jobs:
           jpackage `
             --input target\ `
             --name LSOListGenerator `
-            --main-jar LSOListGenerator-1-jar-with-dependencies.jar
-            --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication `
+            --main-jar LSOListGenerator-1-jar-with-dependencies.jar `
+            --main-class "pl.bator.lso_list_generator.LSOListGeneratorApplication" `
             --type msi `
             --icon src\main\resources\logo.ico `
             --dest . `
-            --app-version ${{ env.VERSION }} `
+            --app-version "1.0.26" `
             --win-shortcut `
             --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000"
-        shell: pwsh
+          shell: pwsh
 
       - name: Upload MSI as artifact
         uses: actions/upload-artifact@v4
