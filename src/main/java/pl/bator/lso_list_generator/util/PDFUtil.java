@@ -13,6 +13,7 @@ import pl.bator.lso_list_generator.model.SundayMass;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class PDFUtil {
-    public void generatePdf(Group group, Month month, Year year, String path) throws IOException {
+    public void generatePdf(Group group, Month month, Year year, Path path) throws IOException {
         String html = parseThymeleafTemplate(group, month, year);
 
         String outputFolder = path + "/lista_" + month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("PL")) + "_" + year + "_grupa_" + group.getNumber() + ".pdf";

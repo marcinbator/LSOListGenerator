@@ -6,6 +6,7 @@ import pl.bator.lso_list_generator.service.PDFGenerationService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Path;
 import java.text.DateFormatSymbols;
 import java.time.Year;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ public class NavbarController {
     private JComboBox<String> monthComboBox;
     private JComboBox<Integer> yearComboBox;
     private JLabel pathLabel;
-    private String pdfSavePath = System.getProperty("user.home") + "\\Desktop";
+    private Path pdfSavePath = Path.of(System.getProperty("user.home"), "Desktop");
 
     private final PDFGenerationService pdfGenerationService;
     private final Component parent;
@@ -72,13 +73,13 @@ public class NavbarController {
     }
 
     private void changeSavePath() {
-        JFileChooser fileChooser = new JFileChooser(pdfSavePath);
+        JFileChooser fileChooser = new JFileChooser(pdfSavePath.toString());
         fileChooser.setDialogTitle("Wybierz folder zapisu");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int userSelection = fileChooser.showSaveDialog(parent);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
-            pdfSavePath = fileChooser.getSelectedFile().getAbsolutePath();
+            pdfSavePath = Path.of(fileChooser.getSelectedFile().getAbsolutePath());
             pathLabel.setText("Aktualna ścieżka: " + pdfSavePath);
         }
     }

@@ -5,6 +5,7 @@ import pl.bator.lso_list_generator.repository.GroupJSONRepository;
 import pl.bator.lso_list_generator.util.PDFUtil;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.DateFormatSymbols;
 import java.time.Month;
 import java.time.Year;
@@ -18,7 +19,7 @@ public class PDFGenerationService {
         this.groupJSONRepository = groupJSONRepository;
     }
 
-    public void handleGenerateClick(String selectedMonth, int selectedYear, String savePath) throws NotFoundException, IOException {
+    public void handleGenerateClick(String selectedMonth, int selectedYear, Path savePath) throws NotFoundException, IOException {
 
         int monthIndex = -1;
         String[] polishMonths = new DateFormatSymbols(new Locale("pl")).getMonths();
