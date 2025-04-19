@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.bator</groupId>
     <artifactId>LSOListGenerator</artifactId>
-    <version>1.0</version>
+    <version>${revision}</version>
     <name>LSOTableGenerator</name>
 
     <dependencies>
@@ -77,5 +77,7 @@
             </plugin>
         </plugins>
     </build>
-
+    <properties>
+        <revision>1.0.0</revision>
+    </properties>
 </project>

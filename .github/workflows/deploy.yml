@@ -1,4 +1,5 @@
 name: Deploy
+
 on:
   push:
     branches: [main]
@@ -19,8 +20,11 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Set version
+        run: echo "VERSION=${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Build with Maven
-        run: mvn package -DskipTests
+        run: mvn versions:set -DnewVersion=${{ env.VERSION }} && mvn package -DskipTests
 
       - name: Install jpackage dependencies
         run: |
@@ -32,17 +36,18 @@ jobs:
           jpackage \
             --input target/ \
             --name LSOListGenerator \
-            --main-jar LSOListGenerator-1.0.jar \
+            --main-jar LSOListGenerator-${{ env.VERSION }}.jar \
             --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication \
             --type deb \
             --icon src/main/resources/logo.png \
-            --dest .
+            --dest . \
+            --app-version ${{ env.VERSION }}
 
       - name: Upload DEB as artifact
         uses: actions/upload-artifact@v4
         with:
           name: lso-deb
-          path: lsolistgenerator*.deb
+          path: LSOListGenerator*.deb
 
   build-windows:
     runs-on: windows-latest
@@ -56,19 +61,34 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Build with Maven
-        run: mvn package -DskipTests
-
-      - name: Create EXE package
-        run: |
-          jpackage --input target\ --name LSOListGenerator --main-jar LSOListGenerator-1.0.jar --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication --type msi --icon src\main\resources\logo.ico --dest . --win-shortcut
+      - name: Set version
+        run: echo "VERSION=${{ github.run_number }}" >> $env:GITHUB_ENV
         shell: pwsh
 
-      - name: Upload EXE as artifact
+      - name: Build with Maven
+        run: mvn versions:set -DnewVersion=$env:VERSION; mvn package -DskipTests
+        shell: pwsh
+
+      - name: Create MSI package
+        run: |
+          jpackage `
+            --input target\ `
+            --name LSOListGenerator `
+            --main-jar LSOListGenerator-$env:VERSION.jar `
+            --main-class pl.bator.lso_list_generator.LSOListGeneratorApplication `
+            --type msi `
+            --icon src\main\resources\logo.ico `
+            --dest . `
+            --app-version $env:VERSION `
+            --win-shortcut `
+            --win-upgrade-uuid "123e4567-e89b-12d3-a456-426614174000"
+        shell: pwsh
+
+      - name: Upload MSI as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: lso-exe
-          path: LSOListGenerator*.exe
+          name: lso-msi
+          path: LSOListGenerator*.msi
 
   release:
     needs: [build-linux, build-windows]
@@ -79,10 +99,10 @@ jobs:
         with:
           name: lso-deb
 
-      - name: Download EXE artifact
+      - name: Download MSI artifact
         uses: actions/download-artifact@v4
         with:
-          name: lso-exe
+          name: lso-msi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -90,7 +110,7 @@ jobs:
           name: Release v${{ github.run_number }}
           tag_name: v${{ github.run_number }}
           files: |
-            lsolistgenerator*.deb
-            LSOListGenerator*.exe
+            LSOListGenerator*.deb
+            LSOListGenerator*.msi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
