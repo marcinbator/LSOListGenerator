@@ -18,7 +18,7 @@ public class NavbarView {
     private JComboBox<String> monthComboBox;
     private JComboBox<Integer> yearComboBox;
     private JLabel pathLabel;
-    private Path pdfSavePath = Path.of(System.getProperty("user.home"), "Desktop");
+    public static Path pdfSavePath = Path.of(System.getProperty("user.home"), "Desktop");
 
     private final PDFGenerationService pdfGenerationService;
     private final Component parent;

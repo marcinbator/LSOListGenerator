@@ -19,7 +19,7 @@ public class GroupJSONRepository {
     @Setter
     private List<Group> groups;
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final Path dbFilePath = Path.of(System.getProperty("user.home"), "lso-groups.json");
+    public static final Path dbFilePath = Path.of(System.getProperty("user.home"), "lso-groups.json");
 
     public GroupJSONRepository() throws IOException {
         groups = readGroups();

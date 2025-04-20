@@ -39,7 +39,7 @@ public class ApplicationView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(groupsPanel);
 
         navbarView.initView(monthAndYearSelectorPanel, pathSelectorPanel, buttonPanel);
-        groupsView.initView(groupsPanel, scrollPane, buttonPanel);
+        groupsView.initView(this, groupsPanel, scrollPane, buttonPanel);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(monthAndYearSelectorPanel);

@@ -18,7 +18,7 @@ public class GroupsView {
         this.groupJSONRepository = groupJSONRepository;
     }
 
-    public void initView(@NotNull JPanel groupPanel, @NotNull JScrollPane scrollPane, @NotNull JPanel buttonPanel) {
+    public void initView(Component parent, @NotNull JPanel groupPanel, @NotNull JScrollPane scrollPane, @NotNull JPanel buttonPanel) {
         groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
         groupPanel.setBorder(BorderFactory.createTitledBorder("Grupy"));
         groupPanel.setMinimumSize(new Dimension(600, 400));
@@ -36,5 +36,7 @@ public class GroupsView {
             JPanel tilePanel = groupsService.createGroupTile(group, groupPanel);
             groupPanel.add(tilePanel);
         }
+
+        groupsService.initButtons(parent, buttonPanel, groupPanel);
     }
 }

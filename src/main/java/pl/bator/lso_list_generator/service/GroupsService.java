@@ -1,11 +1,11 @@
 package pl.bator.lso_list_generator.service;
 
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import pl.bator.lso_list_generator.model.Group;
 import pl.bator.lso_list_generator.model.Person;
 import pl.bator.lso_list_generator.model.SundayMass;
 import pl.bator.lso_list_generator.repository.GroupJSONRepository;
+import pl.bator.lso_list_generator.util.JSONUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,14 +14,22 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.DayOfWeek;
 import java.util.Comparator;
 
-@RequiredArgsConstructor
+import static pl.bator.lso_list_generator.view.NavbarView.pdfSavePath;
+
 public class GroupsService {
     private final String[] dayNames = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"};
     private final String[] polishDayNames = {"poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"};
-    private final GroupJSONRepository groupJSONRepository;
+
+    private GroupJSONRepository groupJSONRepository;
+    private final JSONUtil jsonUtil = new JSONUtil();
+
+    public GroupsService(GroupJSONRepository groupJSONRepository) {
+        this.groupJSONRepository = groupJSONRepository;
+    }
 
     public void handleAddNewGroup(JPanel groupTilesPanel) {
         SundayMass sund = SundayMass.R;
@@ -133,6 +141,35 @@ public class GroupsService {
         return tilePanel;
     }
 
+    public void initButtons(Component parent, @NotNull JPanel buttonPanel, @NotNull JPanel groupTilesPanel) {
+        var exportJsonButton = new JButton("Eksportuj listę");
+        exportJsonButton.addActionListener(e -> {
+            try {
+                jsonUtil.copyFile(GroupJSONRepository.dbFilePath, pdfSavePath.resolve("lso-groups.json"));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        buttonPanel.add(exportJsonButton);
+
+        var importJsonButton = new JButton("Importuj listę");
+        importJsonButton.addActionListener(e -> {
+            try {
+                JFileChooser fileChooser = new JFileChooser(pdfSavePath.toString());
+                fileChooser.setDialogTitle("Wybierz plik JSON");
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int userSelection = fileChooser.showSaveDialog(parent);
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                    jsonUtil.copyFile(Path.of(fileChooser.getSelectedFile().getAbsolutePath()), GroupJSONRepository.dbFilePath);
+                    refreshGroups(groupTilesPanel);
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        buttonPanel.add(importJsonButton);
+    }
+
     //
 
     private void handleSaveGroupClick(@NotNull String text, @NotNull Group group, JPanel container, JCheckBox[] dayCheckBoxes, JPanel groupTilePanel) throws IOException {
@@ -193,8 +230,9 @@ public class GroupsService {
         refreshGroups(groupTilesPanel);
     }
 
-    private void refreshGroups(@NotNull JPanel container) {
+    private void refreshGroups(@NotNull JPanel container) throws IOException {
         container.removeAll();
+        groupJSONRepository = new GroupJSONRepository();
         var groups = groupJSONRepository.getGroups().stream().sorted(Comparator.comparingInt(Group::getNumber)).toList();
         for (Group group : groups) {
             JPanel tilePanel = createGroupTile(group, container);
