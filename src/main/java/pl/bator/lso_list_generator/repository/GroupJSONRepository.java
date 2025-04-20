@@ -30,8 +30,9 @@ public class GroupJSONRepository {
         saveGroups();
     }
 
-    public void removeGroup(int groupNumber) throws IOException {
+    public void removeGroup(int groupNumber, boolean sortRest) throws IOException {
         groups.removeIf(group -> group.getNumber() == groupNumber);
+        if (sortRest) groups.forEach(group -> group.setNumber(group.getNumber() - 1));
         saveGroups();
     }
 

@@ -1,18 +1,20 @@
-package pl.bator.lso_list_generator.controller;
+package pl.bator.lso_list_generator.view;
 
+import javassist.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import pl.bator.lso_list_generator.repository.GroupJSONRepository;
 import pl.bator.lso_list_generator.service.PDFGenerationService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.text.DateFormatSymbols;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class NavbarController {
+public class NavbarView {
     private JComboBox<String> monthComboBox;
     private JComboBox<Integer> yearComboBox;
     private JLabel pathLabel;
@@ -21,7 +23,7 @@ public class NavbarController {
     private final PDFGenerationService pdfGenerationService;
     private final Component parent;
 
-    public NavbarController(GroupJSONRepository groupJSONRepository, Component parent) {
+    public NavbarView(GroupJSONRepository groupJSONRepository, Component parent) {
         this.pdfGenerationService = new PDFGenerationService(groupJSONRepository);
         this.parent = parent;
     }
@@ -68,7 +70,13 @@ public class NavbarController {
 
     private void initializeButtons(@NotNull JPanel buttonPanel) {
         var generatePdfButton = new JButton("Generuj");
-        generatePdfButton.addActionListener(e -> handleGenerateClick());
+        generatePdfButton.addActionListener(e -> {
+            try {
+                handleGenerateClick();
+            } catch (NotFoundException | IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         buttonPanel.add(generatePdfButton);
     }
 
@@ -84,18 +92,15 @@ public class NavbarController {
         }
     }
 
-    private void handleGenerateClick() {
-        try {
-            var selectedMonth = (String) monthComboBox.getSelectedItem();
-            var selectedYear = (Integer) yearComboBox.getSelectedItem();
-            if (selectedMonth == null || selectedYear == null) {
-                JOptionPane.showMessageDialog(parent, "Błędny miesiąc lub rok.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            pdfGenerationService.handleGenerateClick(selectedMonth, selectedYear, pdfSavePath);
-            JOptionPane.showMessageDialog(parent, "Wygenerowano pomyślnie!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(parent, "Błąd generowania: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    private void handleGenerateClick() throws NotFoundException, IOException {
+        var selectedMonth = (String) monthComboBox.getSelectedItem();
+        var selectedYear = (Integer) yearComboBox.getSelectedItem();
+        if (selectedMonth == null || selectedYear == null) {
+            JOptionPane.showMessageDialog(parent, "Błędny miesiąc lub rok.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+        pdfGenerationService.handleGenerateClick(selectedMonth, selectedYear, pdfSavePath);
+        JOptionPane.showMessageDialog(parent, "Wygenerowano pomyślnie!");
+
     }
 }

@@ -1,4 +1,4 @@
-package pl.bator.lso_list_generator.controller;
+package pl.bator.lso_list_generator.view;
 
 import pl.bator.lso_list_generator.repository.GroupJSONRepository;
 
@@ -7,23 +7,23 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
-public class ApplicationController extends JFrame {
-    private final NavbarController navbarController;
-    private final GroupsPanelController groupsPanelController;
-    private GroupJSONRepository groupJSONRepository;
+public class ApplicationView extends JFrame {
+    private NavbarView navbarView;
+    private GroupsView groupsView;
 
-    public ApplicationController() {
+    public ApplicationView() {
         try {
-            groupJSONRepository = new GroupJSONRepository();
+            GroupJSONRepository groupJSONRepository = new GroupJSONRepository();
+            navbarView = new NavbarView(groupJSONRepository, this);
+            groupsView = new GroupsView(groupJSONRepository);
+            initWindow();
         } catch (IOException e) {
-            showErrorAndExit("Nie można otworzyć pliku JSON.");
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Błąd krytyczny", javax.swing.JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
-        navbarController = new NavbarController(groupJSONRepository, this);
-        groupsPanelController = new GroupsPanelController(groupJSONRepository);
-        initWindow();
     }
 
-    private void initWindow() {
+    private void initWindow() throws IOException {
         setTitle("Generator listy LSO");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -38,8 +38,8 @@ public class ApplicationController extends JFrame {
         JPanel groupsPanel = new JPanel(new FlowLayout());
         JScrollPane scrollPane = new JScrollPane(groupsPanel);
 
-        navbarController.initView(monthAndYearSelectorPanel, pathSelectorPanel, buttonPanel);
-        groupsPanelController.initView(groupsPanel, scrollPane, buttonPanel);
+        navbarView.initView(monthAndYearSelectorPanel, pathSelectorPanel, buttonPanel);
+        groupsView.initView(groupsPanel, scrollPane, buttonPanel);
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(monthAndYearSelectorPanel);
@@ -48,10 +48,5 @@ public class ApplicationController extends JFrame {
         mainPanel.add(scrollPane);
 
         add(mainPanel);
-    }
-
-    public void showErrorAndExit(String message) {
-        JOptionPane.showMessageDialog(null, message, "Błąd krytyczny", javax.swing.JOptionPane.ERROR_MESSAGE);
-        System.exit(1);
     }
 }

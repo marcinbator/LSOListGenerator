@@ -9,7 +9,7 @@ Generuje listę w postaci pliku .pdf w wybranej przez użytkownika lokalizacji.
 ## Technologie
 
 - Java 17
-- Java Swing (pl.bator.lso_list_generator.controller)
+- Java Swing (pl.bator.lso_list_generator.view)
 - [Flying Saucer](https://link-url-here.org](https://github.com/flyingsaucerproject/flyingsaucer)https://github.com/flyingsaucerproject/flyingsaucer)
   library (PDF generation)
 

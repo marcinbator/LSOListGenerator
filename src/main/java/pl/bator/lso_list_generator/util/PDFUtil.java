@@ -1,6 +1,7 @@
 package pl.bator.lso_list_generator.util;
 
 import com.lowagie.text.pdf.BaseFont;
+import org.jetbrains.annotations.NotNull;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class PDFUtil {
-    public void generatePdf(Group group, Month month, Year year, Path path) throws IOException {
+    public static void generatePdf(Group group, Month month, Year year, Path path) throws IOException {
         String html = parseThymeleafTemplate(group, month, year);
 
         String outputFolder = path + "/lista_" + month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("PL")) + "_" + year + "_grupa_" + group.getNumber() + ".pdf";
@@ -40,7 +41,7 @@ public class PDFUtil {
 
     //
 
-    public String parseThymeleafTemplate(Group group, Month month, Year year) {
+    private static String parseThymeleafTemplate(Group group, @NotNull Month month, Year year) {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -75,5 +76,4 @@ public class PDFUtil {
 
         return templateEngine.process("list_template", context);
     }
-
 }

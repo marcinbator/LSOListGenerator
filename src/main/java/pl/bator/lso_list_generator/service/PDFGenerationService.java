@@ -13,14 +13,12 @@ import java.util.Locale;
 
 public class PDFGenerationService {
     private final GroupJSONRepository groupJSONRepository;
-    private final PDFUtil pdfUtil = new PDFUtil();
 
     public PDFGenerationService(GroupJSONRepository groupJSONRepository) {
         this.groupJSONRepository = groupJSONRepository;
     }
 
     public void handleGenerateClick(String selectedMonth, int selectedYear, Path savePath) throws NotFoundException, IOException {
-
         int monthIndex = -1;
         String[] polishMonths = new DateFormatSymbols(new Locale("pl")).getMonths();
         for (int i = 0; i < polishMonths.length; i++) {
@@ -34,7 +32,7 @@ public class PDFGenerationService {
         Month month = Month.of(monthIndex + 1);
 
         for (int i = 0; i < groupJSONRepository.getGroups().size(); i++) {
-            pdfUtil.generatePdf(groupJSONRepository.getGroups().get(i), month, Year.of(selectedYear), savePath);
+            PDFUtil.generatePdf(groupJSONRepository.getGroups().get(i), month, Year.of(selectedYear), savePath);
         }
     }
 }
