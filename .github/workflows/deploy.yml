@@ -78,7 +78,7 @@ jobs:
           jpackage `
             --input target\ `
             --name LSOListGenerator `
-            --main-jar LSOListGenerator-${{ env.VERSION }}.jar `
+            --main-jar LSOListGenerator-1-jar-with-dependencies.jar `
             --main-class "pl.bator.lso_list_generator.LSOListGeneratorApplication" `
             --type msi `
             --icon "src\main\resources\logo.ico" `
