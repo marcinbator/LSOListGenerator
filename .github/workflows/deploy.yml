@@ -24,7 +24,9 @@ jobs:
         run: echo "VERSION=${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Build with Maven
-        run: mvn versions:set -DnewVersion=${{ env.VERSION }} && mvn package -DskipTests
+        run: |
+          mvn versions:set -DnewVersion=${{ env.VERSION }} 
+          mvn package -DskipTests
 
       - name: Install jpackage dependencies
         run: |
@@ -76,10 +78,10 @@ jobs:
           jpackage `
             --input target\ `
             --name LSOListGenerator `
-            --main-jar LSOListGenerator-1-jar-with-dependencies.jar `
+            --main-jar LSOListGenerator-${{ env.VERSION }}.jar `
             --main-class "pl.bator.lso_list_generator.LSOListGeneratorApplication" `
             --type msi `
-            --icon src\main\resources\logo.ico `
+            --icon "src\main\resources\logo.ico" `
             --dest . `
             --app-version ${{ env.VERSION }} `
             --win-shortcut `
